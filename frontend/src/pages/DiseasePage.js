@@ -7,6 +7,7 @@ import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
 import { Separator } from '../components/ui/separator';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { RichTextEditor, AddTextBlock } from '../components/editor/RichTextEditor';
 import { SectionMedia } from '../components/editor/SectionMedia';
 import { DiseaseSearch } from '../components/DiseaseSearch';
@@ -14,7 +15,7 @@ import { toast } from 'sonner';
 import axios from 'axios';
 import { 
   Bookmark, BookmarkCheck, FileText, Edit, Pencil, Check, X,
-  ArrowLeft, Save, Clock, Type, Plus, Loader2
+  ArrowLeft, Save, Clock, Type, Plus, Loader2, Globe, AlertTriangle
 } from 'lucide-react';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -37,10 +38,16 @@ const sectionDefs = [
   { id: 'references', key: 'references' },
 ];
 
+const LANGUAGE_NAMES = {
+  en: 'English',
+  pt: 'Português',
+  es: 'Español'
+};
+
 export const DiseasePage = () => {
   const { id } = useParams();
-  const { getAuthHeaders, isEditor } = useAuth();
-  const { currentLanguage, t } = useLanguage();
+  const { getAuthHeaders, isAdmin } = useAuth();
+  const { currentLanguage, t, languages } = useLanguage();
   
   // Generate sections with translated labels
   const sections = sectionDefs.map(s => ({
@@ -55,11 +62,13 @@ export const DiseasePage = () => {
   const [showNotes, setShowNotes] = useState(false);
   const [savingNote, setSavingNote] = useState(false);
   const [activeSection, setActiveSection] = useState('definition');
-  const [editingSection, setEditingSection] = useState(null);
-  const [editedContent, setEditedContent] = useState({});
+  
+  // Inline editing state
+  const [editMode, setEditMode] = useState(false);
+  const [editedFields, setEditedFields] = useState({});
   const [saving, setSaving] = useState(false);
   const [translating, setTranslating] = useState(false);
-  const [hasChanges, setHasChanges] = useState(false);
+  const [showTranslateConfirm, setShowTranslateConfirm] = useState(false);
 
   const contentRef = useRef(null);
   const sectionRefs = useRef({});
