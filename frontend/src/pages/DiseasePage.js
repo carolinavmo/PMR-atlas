@@ -410,11 +410,14 @@ export const DiseasePage = () => {
 
         {/* Main Content */}
         <div className="max-w-3xl xl:mr-72">
-          {/* Back Button */}
-          <Link to="/dashboard" className="inline-flex items-center text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 mb-4">
-            <ArrowLeft className="w-4 h-4 mr-1" />
-            Back to Dashboard
-          </Link>
+          {/* Back Button and Disease Search */}
+          <div className="flex items-center justify-between gap-4 mb-4">
+            <Link to="/dashboard" className="inline-flex items-center text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
+              <ArrowLeft className="w-4 h-4 mr-1" />
+              Back to Dashboard
+            </Link>
+            <DiseaseSearch currentDiseaseId={id} />
+          </div>
 
           {/* Header */}
           <div className="mb-8">
@@ -424,14 +427,6 @@ export const DiseasePage = () => {
                   <Badge variant="outline" className="text-blue-600 border-blue-300">
                     {disease.category_name}
                   </Badge>
-                  {/* Language Switcher */}
-                  <LanguageSwitcher
-                    currentLanguage={currentLanguage}
-                    onLanguageChange={handleLanguageChange}
-                    diseaseId={id}
-                    getAuthHeaders={getAuthHeaders}
-                    onTranslationComplete={handleTranslationComplete}
-                  />
                 </div>
                 <h1 className="text-3xl lg:text-4xl font-heading font-bold text-slate-900 dark:text-white" data-testid="disease-title">
                   {getDiseaseName()}
