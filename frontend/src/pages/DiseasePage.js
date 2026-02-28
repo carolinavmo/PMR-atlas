@@ -695,17 +695,29 @@ export const DiseasePage = () => {
                     </div>
                     
                     {/* Edit button - only for admins, only when not already editing */}
-                    {isAdmin && !editingSection && section.id !== 'references' && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="opacity-0 group-hover:opacity-100 transition-opacity text-slate-500 hover:text-blue-600"
-                        onClick={() => startSectionEdit(section.id)}
-                        data-testid={`edit-btn-${section.id}`}
-                      >
-                        <Pencil className="w-4 h-4 mr-1" />
-                        {t('edit')}
-                      </Button>
+                    {isAdmin && !editingSection && !editingMediaSection && section.id !== 'references' && (
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-slate-500 hover:text-blue-600"
+                          onClick={() => startSectionEdit(section.id)}
+                          data-testid={`edit-btn-${section.id}`}
+                        >
+                          <Pencil className="w-4 h-4 mr-1" />
+                          {t('edit')}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-slate-500 hover:text-purple-600"
+                          onClick={() => startMediaEdit(section.id)}
+                          data-testid={`media-btn-${section.id}`}
+                        >
+                          <Image className="w-4 h-4 mr-1" />
+                          Media
+                        </Button>
+                      </div>
                     )}
                   </div>
                   
