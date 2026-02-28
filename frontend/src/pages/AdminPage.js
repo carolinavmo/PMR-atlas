@@ -172,7 +172,7 @@ export const AdminPage = () => {
               Manage content and users
             </p>
           </div>
-          <Badge className="bg-sage-100 text-sage-700 dark:bg-sage-900/30 dark:text-sage-400">
+          <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
             <Shield className="w-3 h-3 mr-1" />
             Administrator
           </Badge>
@@ -183,7 +183,7 @@ export const AdminPage = () => {
           <Card>
             <CardContent className="pt-4">
               <div className="flex items-center gap-3">
-                <Users className="w-8 h-8 text-sage-500" />
+                <Users className="w-8 h-8 text-blue-500" />
                 <div>
                   <p className="text-2xl font-bold">{stats?.total_users || 0}</p>
                   <p className="text-xs text-slate-500">Users</p>
@@ -251,7 +251,7 @@ export const AdminPage = () => {
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Diseases Management</CardTitle>
                 <Link to="/admin/diseases/new">
-                  <Button className="bg-sage-600 hover:bg-sage-700" data-testid="add-disease-btn">
+                  <Button className="bg-blue-600 hover:bg-blue-700" data-testid="add-disease-btn">
                     <Plus className="w-4 h-4 mr-2" />
                     Add Disease
                   </Button>
@@ -329,7 +329,7 @@ export const AdminPage = () => {
                 <Dialog open={showCategoryDialog} onOpenChange={setShowCategoryDialog}>
                   <DialogTrigger asChild>
                     <Button 
-                      className="bg-sage-600 hover:bg-sage-700"
+                      className="bg-blue-600 hover:bg-blue-700"
                       onClick={() => {
                         setEditingCategory(null);
                         setCategoryForm({ name: '', description: '', icon: 'folder', order: 0 });
@@ -405,7 +405,7 @@ export const AdminPage = () => {
                     </div>
                     <DialogFooter>
                       <Button variant="outline" onClick={() => setShowCategoryDialog(false)}>Cancel</Button>
-                      <Button onClick={saveCategory} className="bg-sage-600 hover:bg-sage-700" data-testid="save-category-btn">
+                      <Button onClick={saveCategory} className="bg-blue-600 hover:bg-blue-700" data-testid="save-category-btn">
                         {editingCategory ? 'Update' : 'Create'}
                       </Button>
                     </DialogFooter>
@@ -487,7 +487,7 @@ export const AdminPage = () => {
                           <Badge className={
                             u.role === 'admin' ? 'bg-red-100 text-red-700' :
                             u.role === 'editor' ? 'bg-amber-100 text-amber-700' :
-                            'bg-sage-100 text-sage-700'
+                            'bg-blue-100 text-blue-700'
                           }>
                             {u.role}
                           </Badge>
