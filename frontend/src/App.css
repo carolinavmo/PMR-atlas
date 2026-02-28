@@ -48,63 +48,50 @@
   box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--ring));
 }
 
-/* Medical content typography */
-.disease-content h3 {
+/* Medical content typography - Continuous Flow */
+.disease-content {
+  max-width: 65ch;
+}
+
+.disease-content .section-heading {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-weight: 600;
-  font-size: 1.125rem;
+  font-weight: 700;
+  font-size: 1.25rem;
   color: hsl(var(--foreground));
-  margin-top: 1.5rem;
-  margin-bottom: 0.75rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid hsl(var(--border));
+  border-bottom: 2px solid hsl(217 91% 60% / 0.2);
+  scroll-margin-top: 100px;
 }
 
-.disease-content p {
-  line-height: 1.75;
+.disease-content .section-heading:first-child {
+  margin-top: 0;
+}
+
+.disease-content .section-content {
+  line-height: 1.8;
   color: hsl(var(--muted-foreground));
-  white-space: pre-line;
 }
 
-.disease-content ul, .disease-content ol {
-  margin-left: 1.25rem;
-  margin-top: 0.5rem;
+.disease-content .section-content p {
+  margin-bottom: 1rem;
+}
+
+.disease-content .section-content ul,
+.disease-content .section-content ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.disease-content .section-content li {
   margin-bottom: 0.5rem;
+  line-height: 1.7;
 }
 
-.disease-content li {
-  line-height: 1.75;
-  color: hsl(var(--muted-foreground));
-  margin-bottom: 0.25rem;
-}
-
-/* Table of contents highlight */
-.toc-item {
-  position: relative;
-  padding-left: 0.75rem;
-  transition: all 0.2s ease;
-}
-
-.toc-item::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: transparent;
-  border-radius: 1px;
-  transition: background 0.2s ease;
-}
-
-.toc-item:hover::before,
-.toc-item.active::before {
-  background: hsl(var(--primary));
-}
-
-.toc-item:hover,
-.toc-item.active {
-  color: hsl(var(--primary));
+.disease-content .section-content strong {
+  color: hsl(var(--foreground));
+  font-weight: 600;
 }
 
 /* Loading skeleton animation */
@@ -162,11 +149,103 @@
   transform: scale(0.98);
 }
 
-/* Auth page background pattern */
+/* Auth page background pattern - Blue */
 .auth-pattern {
   background-color: hsl(var(--sidebar-bg));
   background-image: 
-    radial-gradient(at 40% 20%, hsl(152 69% 40% / 0.1) 0px, transparent 50%),
+    radial-gradient(at 40% 20%, hsl(217 91% 60% / 0.1) 0px, transparent 50%),
     radial-gradient(at 80% 0%, hsl(262 83% 76% / 0.1) 0px, transparent 50%),
-    radial-gradient(at 0% 50%, hsl(152 69% 40% / 0.08) 0px, transparent 50%);
+    radial-gradient(at 0% 50%, hsl(217 91% 60% / 0.08) 0px, transparent 50%);
+}
+
+/* Rich text content styling */
+.rich-text-content b,
+.rich-text-content strong {
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.rich-text-content i,
+.rich-text-content em {
+  font-style: italic;
+}
+
+.rich-text-content u {
+  text-decoration: underline;
+}
+
+.rich-text-content ul {
+  list-style-type: disc;
+  margin-left: 1.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.rich-text-content ol {
+  list-style-type: decimal;
+  margin-left: 1.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.rich-text-content li {
+  margin-bottom: 0.25rem;
+}
+
+/* Media grid */
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.media-item {
+  position: relative;
+  aspect-ratio: 16/10;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid hsl(var(--border));
+}
+
+.media-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.media-item .media-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 0.5rem;
+}
+
+.media-item:hover .media-overlay {
+  opacity: 1;
+}
+
+/* Add media button */
+.add-media-btn {
+  aspect-ratio: 16/10;
+  border: 2px dashed hsl(var(--border));
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: hsl(var(--muted-foreground));
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.add-media-btn:hover {
+  border-color: hsl(var(--primary));
+  color: hsl(var(--primary));
+  background: hsl(var(--primary) / 0.05);
 }
