@@ -708,7 +708,7 @@ export const DiseasePage = () => {
           </div>
 
           {/* Content Sections - Collapsible */}
-          <div className="space-y-3">
+          <div className="space-y-1">
             {sections.map((section) => {
               const content = getCurrentContent(section.id);
               const sectionMedia = getSectionMedia(section.id);
@@ -727,10 +727,9 @@ export const DiseasePage = () => {
                   key={section.id} 
                   ref={el => sectionRefs.current[section.id] = el}
                   className={`
-                    w-full rounded-xl overflow-hidden transition-all duration-300
-                    ${isEditing ? 'ring-2 ring-blue-400 bg-gradient-to-br from-blue-50 to-indigo-50/50 dark:from-blue-900/20 dark:to-indigo-900/20' : ''}
-                    ${isEditingMedia ? 'ring-2 ring-purple-400 bg-gradient-to-br from-purple-50 to-pink-50/50 dark:from-purple-900/20 dark:to-pink-900/20' : ''}
-                    ${!isEditing && !isEditingMedia ? 'bg-white dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/50 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-md' : ''}
+                    w-full transition-all duration-200
+                    ${isEditing ? 'bg-blue-50/50 dark:bg-blue-900/10 rounded-lg p-3' : ''}
+                    ${isEditingMedia ? 'bg-purple-50/50 dark:bg-purple-900/10 rounded-lg p-3' : ''}
                   `}
                   data-testid={`section-${section.id}`}
                 >
@@ -738,23 +737,22 @@ export const DiseasePage = () => {
                   <button
                     onClick={() => !isEditing && !isEditingMedia && toggleSection(section.id)}
                     className={`
-                      w-full px-5 py-4 flex items-center justify-between
-                      ${!isEditing && !isEditingMedia ? 'cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/30' : 'cursor-default'}
-                      transition-colors duration-200
+                      w-full py-3 flex items-center justify-between border-b border-slate-200 dark:border-slate-700
+                      ${!isEditing && !isEditingMedia ? 'cursor-pointer hover:bg-slate-50/50 dark:hover:bg-slate-800/30' : 'cursor-default'}
+                      transition-colors duration-150
                     `}
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
                       {/* Expand/Collapse Icon */}
                       {!isEditing && !isEditingMedia && (
                         <div className={`
-                          w-6 h-6 rounded-full flex items-center justify-center
-                          ${isExpanded ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-600' : 'bg-slate-100 dark:bg-slate-700 text-slate-400'}
-                          transition-all duration-200
+                          transition-transform duration-200
+                          ${isExpanded ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400'}
                         `}>
                           {isExpanded ? (
-                            <ChevronDown className="w-4 h-4" />
+                            <ChevronDown className="w-5 h-5" />
                           ) : (
-                            <ChevronRight className="w-4 h-4" />
+                            <ChevronRight className="w-5 h-5" />
                           )}
                         </div>
                       )}
@@ -765,7 +763,7 @@ export const DiseasePage = () => {
                       
                       {/* Last Edited indicator */}
                       {editMeta && (
-                        <span className="hidden sm:flex text-xs text-slate-400 items-center gap-1" data-testid={`edit-meta-${section.id}`}>
+                        <span className="hidden sm:flex text-xs text-slate-400 items-center gap-1 ml-2" data-testid={`edit-meta-${section.id}`}>
                           <User className="w-3 h-3" />
                           {editMeta.last_edited_by_name || 'Admin'} • {formatRelativeTime(editMeta.last_edited_at)}
                           {editMeta.translated_at && (
