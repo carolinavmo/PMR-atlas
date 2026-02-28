@@ -805,10 +805,10 @@ export const DiseasePage = () => {
                   
                   {/* Section Content - Collapsible */}
                   <div className={`
-                    overflow-hidden transition-all duration-300 ease-in-out
+                    overflow-hidden transition-all duration-200 ease-in-out
                     ${isExpanded ? 'max-h-[5000px] opacity-100' : 'max-h-0 opacity-0'}
                   `}>
-                    <div className="px-5 pb-5 pt-0">
+                    <div className="py-4">
                       {isEditing ? (
                     // Edit Mode for this section
                     <div className="space-y-4">
