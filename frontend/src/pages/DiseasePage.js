@@ -328,10 +328,10 @@ export const DiseasePage = () => {
             <nav className="space-y-0.5">
               {sections.map((section) => {
                 const content = getCurrentContent(section.id);
-                // Only show sections with content
-                if (section.id !== 'media' && section.id !== 'references' && !content) return null;
-                if (section.id === 'references' && Array.isArray(content) && content.length === 0) return null;
-                if (section.id === 'media' && (!disease.images || disease.images.length === 0) && !isEditor) return null;
+                const sectionMedia = getSectionMedia(section.id);
+                // Only show sections with content or media
+                if (section.id !== 'references' && !content && sectionMedia.length === 0) return null;
+                if (section.id === 'references' && Array.isArray(content) && content.length === 0 && sectionMedia.length === 0) return null;
                 
                 return (
                   <button
