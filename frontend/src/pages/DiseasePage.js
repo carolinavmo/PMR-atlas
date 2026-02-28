@@ -314,11 +314,6 @@ export const DiseasePage = () => {
   };
 
   const getCurrentContent = (sectionId) => {
-    // Check edited content first
-    if (editedContent.hasOwnProperty(sectionId)) {
-      return editedContent[sectionId];
-    }
-    
     // For non-English, check for translated content
     if (currentLanguage !== 'en') {
       const translatedKey = `${sectionId}_${currentLanguage}`;
@@ -340,17 +335,6 @@ export const DiseasePage = () => {
       if (translatedName) return translatedName;
     }
     return disease?.name || '';
-  };
-
-  const handleAddMoreText = (sectionId) => {
-    const currentContent = getCurrentContent(sectionId);
-    const newContent = currentContent ? `${currentContent}\n\n` : '';
-    setEditedContent(prev => ({
-      ...prev,
-      [sectionId]: newContent
-    }));
-    setEditingSection(sectionId);
-    setHasChanges(true);
   };
 
   // Convert markdown text to JSX with formatting
