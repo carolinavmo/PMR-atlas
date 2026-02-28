@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 import axios from 'axios';
 import { 
   Bookmark, BookmarkCheck, FileText, Pencil, Check, X,
-  ArrowLeft, Save, Clock, Loader2, Globe, AlertTriangle, User
+  ArrowLeft, Save, Clock, Loader2, Globe, AlertTriangle, User, Image
 } from 'lucide-react';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
