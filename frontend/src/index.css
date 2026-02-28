@@ -201,6 +201,27 @@
   .edit-indicator {
     @apply absolute -left-8 top-0 opacity-0 transition-opacity duration-200 text-slate-400 hover:text-blue-500;
   }
+
+  /* Compact content styles */
+  .section-heading {
+    @apply text-lg font-semibold text-slate-900 dark:text-white mb-3 pb-2 border-b border-slate-200 dark:border-slate-700;
+  }
+  
+  .section-content {
+    @apply text-sm leading-relaxed text-slate-600 dark:text-slate-400;
+  }
+  
+  .section-content p {
+    @apply mb-1.5;
+  }
+  
+  .disease-content {
+    @apply text-sm;
+  }
+  
+  .disease-content .section-heading {
+    @apply text-base font-semibold mt-6 first:mt-0;
+  }
 }
 
 @layer utilities {
