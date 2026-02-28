@@ -576,6 +576,20 @@ export const DiseasePage = () => {
                         position="inline"
                       />
                       {renderSectionContent(section.id, content)}
+                      
+                      {/* Add more text button */}
+                      {isEditor && section.id !== 'references' && (
+                        <button
+                          type="button"
+                          onClick={() => handleAddMoreText(section.id)}
+                          className="mt-3 w-full py-2 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg 
+                                     flex items-center justify-center gap-2 text-slate-400 hover:text-blue-500 
+                                     hover:border-blue-400 transition-colors text-sm"
+                        >
+                          <Type className="w-4 h-4" />
+                          <span>Add more text</span>
+                        </button>
+                      )}
                     </div>
                   )}
                   
