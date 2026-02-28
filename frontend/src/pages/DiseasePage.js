@@ -808,32 +808,47 @@ export const DiseasePage = () => {
                       )}
                     </div>
                     
-                    {/* Edit buttons - only for admins */}
-                    {isAdmin && !editingSection && !editingMediaSection && section.id !== 'references' && (
-                      <div 
-                        className="flex items-center gap-1"
-                        onClick={(e) => e.stopPropagation()}
+                    {/* Action buttons */}
+                    <div 
+                      className="flex items-center gap-1"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {/* Copy button - visible to all users */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-slate-400 hover:text-green-600 hover:bg-green-50 dark:hover:bg-green-900/30"
+                        onClick={(e) => copySectionContent(section.id, e)}
+                        data-testid={`copy-btn-${section.id}`}
+                        title="Copy section content"
                       >
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30"
-                          onClick={() => startSectionEdit(section.id)}
-                          data-testid={`edit-btn-${section.id}`}
-                        >
-                          <Pencil className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-slate-400 hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/30"
-                          onClick={() => startMediaEdit(section.id)}
-                          data-testid={`media-btn-${section.id}`}
-                        >
-                          <Image className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    )}
+                        <Copy className="w-4 h-4" />
+                      </Button>
+                      
+                      {/* Edit buttons - only for admins */}
+                      {isAdmin && !editingSection && !editingMediaSection && section.id !== 'references' && (
+                        <>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30"
+                            onClick={() => startSectionEdit(section.id)}
+                            data-testid={`edit-btn-${section.id}`}
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-slate-400 hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/30"
+                            onClick={() => startMediaEdit(section.id)}
+                            data-testid={`media-btn-${section.id}`}
+                          >
+                            <Image className="w-4 h-4" />
+                          </Button>
+                        </>
+                      )}
+                    </div>
                   </button>
                   
                   {/* Section Content - Collapsible */}
