@@ -87,9 +87,9 @@ export const LoginPage = () => {
 
           <Card className="border-0 shadow-xl" data-testid="login-card">
             <CardHeader className="space-y-1 pb-6">
-              <CardTitle className="text-2xl font-heading">Welcome back</CardTitle>
+              <CardTitle className="text-2xl font-heading">{t('welcomeBackLogin')}</CardTitle>
               <CardDescription>
-                Sign in to access your learning dashboard
+                {t('signInToAccess')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -102,7 +102,7 @@ export const LoginPage = () => {
                 )}
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">{t('email')}</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                     <Input
@@ -119,7 +119,7 @@ export const LoginPage = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">{t('password')}</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                     <Input
@@ -141,23 +141,23 @@ export const LoginPage = () => {
                   disabled={isLoading}
                   data-testid="login-submit"
                 >
-                  {isLoading ? 'Signing in...' : 'Sign in'}
+                  {isLoading ? t('signingIn') : t('signIn')}
                 </Button>
               </form>
 
               <div className="mt-6 text-center text-sm">
-                <span className="text-slate-500">Don't have an account? </span>
+                <span className="text-slate-500">{t('dontHaveAccount')} </span>
                 <Link 
                   to="/register" 
                   className="text-blue-600 hover:text-blue-700 font-medium"
                   data-testid="register-link"
                 >
-                  Create one
+                  {t('createOne')}
                 </Link>
               </div>
 
               <div className="mt-4 p-3 bg-slate-100 dark:bg-slate-800 rounded-lg text-sm text-slate-600 dark:text-slate-400">
-                <p className="font-medium mb-1">Demo Admin Account:</p>
+                <p className="font-medium mb-1">{t('demoAdminAccount')}:</p>
                 <p>Email: admin@pmr.edu</p>
                 <p>Password: admin123</p>
               </div>
