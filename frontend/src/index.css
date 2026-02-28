@@ -191,11 +191,11 @@
 
   /* Inline editable section */
   .editable-section {
-    @apply relative group;
+    position: relative;
   }
   
   .editable-section:hover .edit-indicator {
-    @apply opacity-100;
+    opacity: 1;
   }
   
   .edit-indicator {
