@@ -10,12 +10,14 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/colla
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import { Badge } from '../ui/badge';
+import { toast } from 'sonner';
 import axios from 'axios';
 import { 
   Activity, Search, ChevronRight, ChevronDown, Moon, Sun, 
   Menu, X, Bookmark, FileText, Clock, Settings, LogOut,
   User, Home, Shield, Bone, Brain, Zap, Trophy, HeartPulse,
-  Baby, Accessibility, PanelLeftClose, PanelLeft, Globe
+  Baby, Accessibility, PanelLeftClose, PanelLeft, Globe,
+  ArrowUp, ArrowDown, GripVertical
 } from 'lucide-react';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
