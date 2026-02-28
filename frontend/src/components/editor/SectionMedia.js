@@ -299,13 +299,68 @@ export const SectionMedia = ({
                 <Link className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <Input
                   id="media-url"
-                  value={mediaForm.url}
+                  value={mediaForm.url.startsWith('data:') ? 'File uploaded' : mediaForm.url}
                   onChange={(e) => setMediaForm(prev => ({ ...prev, url: e.target.value }))}
                   placeholder={mediaForm.type === 'video' ? 'https://youtube.com/watch?v=...' : 'https://example.com/image.jpg'}
                   className="pl-10"
+                  disabled={mediaForm.url.startsWith('data:')}
                 />
               </div>
             </div>
+
+            {/* File Upload Option for Images */}
+            {mediaForm.type === 'image' && (
+              <div className="space-y-2">
+                <Label>Or upload from computer</Label>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+                <div className="flex items-center gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex items-center gap-2"
+                  >
+                    <Upload className="w-4 h-4" />
+                    Choose File
+                  </Button>
+                  {uploadPreview && (
+                    <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                      <FileImage className="w-4 h-4 text-blue-500" />
+                      <span>{uploadPreview.name}</span>
+                      <span className="text-slate-400">({uploadPreview.size})</span>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 w-6 p-0 text-slate-400 hover:text-red-500"
+                        onClick={() => {
+                          setMediaForm(prev => ({ ...prev, url: '' }));
+                          setUploadPreview(null);
+                        }}
+                      >
+                        <X className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
+                {/* Preview uploaded image */}
+                {uploadPreview && mediaForm.url && (
+                  <div className="mt-2 p-2 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                    <img 
+                      src={mediaForm.url} 
+                      alt="Preview" 
+                      className="max-h-32 mx-auto rounded"
+                    />
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Size */}
             <div className="space-y-2">
