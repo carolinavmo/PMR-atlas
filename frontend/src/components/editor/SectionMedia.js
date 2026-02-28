@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../ui/dialog';
 import { Input } from '../ui/input';
@@ -9,7 +9,7 @@ import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { 
   Plus, X, Image, Video, Link, Upload, Settings, 
   AlignLeft, AlignCenter, AlignRight, Move,
-  ArrowUp, ArrowDown
+  ArrowUp, ArrowDown, FileImage
 } from 'lucide-react';
 
 const ALIGNMENT_OPTIONS = [
@@ -36,6 +36,8 @@ export const SectionMedia = ({
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [editingIndex, setEditingIndex] = useState(null);
+  const [uploadPreview, setUploadPreview] = useState(null);
+  const fileInputRef = useRef(null);
   const [mediaForm, setMediaForm] = useState({
     url: '',
     type: 'image', // 'image' or 'video'
