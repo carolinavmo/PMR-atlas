@@ -477,7 +477,7 @@ export const DiseasePage = () => {
         </div>
 
         {/* Main Content - Full width until TOC */}
-        <div className="xl:pr-56">
+        <div className="xl:mr-52">
           {/* Back Button and Disease Search */}
           <div className="flex items-center justify-between gap-4 mb-4">
             <Link to="/dashboard" className="inline-flex items-center text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
