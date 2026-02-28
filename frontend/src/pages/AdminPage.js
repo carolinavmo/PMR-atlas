@@ -142,6 +142,38 @@ export const AdminPage = () => {
     setShowCategoryDialog(true);
   };
 
+  // Move category up/down in order
+  const moveCategory = async (categoryId, direction) => {
+    const currentIndex = categories.findIndex(c => c.id === categoryId);
+    if (direction === 'up' && currentIndex === 0) return;
+    if (direction === 'down' && currentIndex === categories.length - 1) return;
+    
+    const newCategories = [...categories];
+    const swapIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    
+    // Swap positions
+    [newCategories[currentIndex], newCategories[swapIndex]] = 
+    [newCategories[swapIndex], newCategories[currentIndex]];
+    
+    // Update local state immediately for responsiveness
+    setCategories(newCategories);
+    
+    // Save to backend
+    try {
+      const headers = getAuthHeaders();
+      await axios.put(
+        `${API_URL}/categories/reorder`,
+        { category_ids: newCategories.map(c => c.id) },
+        { headers }
+      );
+      toast.success(t('success'));
+    } catch (err) {
+      // Revert on error
+      fetchData();
+      toast.error(t('error'));
+    }
+  };
+
   const filteredDiseases = diseases.filter(d => 
     d.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     d.category_name?.toLowerCase().includes(searchQuery.toLowerCase())
