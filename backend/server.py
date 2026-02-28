@@ -867,10 +867,13 @@ async def save_section_media(
     
     # Store version history
     updated = await db.diseases.find_one({"id": disease_id}, {"_id": 0})
+    
+    # Create a copy for version history to avoid mutating updated dict
+    version_data = {**updated}
     await db.disease_versions.insert_one({
         "disease_id": disease_id,
-        "version": updated["version"],
-        "data": updated,
+        "version": version_data["version"],
+        "data": version_data,
         "created_by": user["id"],
         "created_at": now,
         "edit_type": "section_media",
