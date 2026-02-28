@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const LanguageContext = createContext();
 
@@ -8,32 +9,60 @@ const LANGUAGES = [
   { code: 'es', name: 'Español', flag: '🇪🇸' },
 ];
 
+const VALID_LANG_CODES = LANGUAGES.map(l => l.code);
+
+// Helper to extract language from URL path
+const extractLangFromPath = (pathname) => {
+  const match = pathname.match(/^\/(en|pt|es)(\/|$)/);
+  return match ? match[1] : null;
+};
+
+// Helper to remove language prefix from path
+const removeLanguagePrefix = (pathname) => {
+  return pathname.replace(/^\/(en|pt|es)/, '') || '/';
+};
+
+// Helper to add language prefix to path
+const addLanguagePrefix = (pathname, lang) => {
+  const cleanPath = removeLanguagePrefix(pathname);
+  return `/${lang}${cleanPath === '/' ? '' : cleanPath}`;
+};
+
 export const LanguageProvider = ({ children }) => {
   const [currentLanguage, setCurrentLanguage] = useState(() => {
-    // Get saved language from localStorage or default to 'en'
     return localStorage.getItem('pmr_language') || 'en';
   });
+  const [isChangingLanguage, setIsChangingLanguage] = useState(false);
 
+  // Save language preference to localStorage
   useEffect(() => {
-    // Save language preference
     localStorage.setItem('pmr_language', currentLanguage);
   }, [currentLanguage]);
 
-  const toggleLanguage = () => {
+  const setLanguage = useCallback((code) => {
+    if (VALID_LANG_CODES.includes(code) && code !== currentLanguage) {
+      setIsChangingLanguage(true);
+      setCurrentLanguage(code);
+      // Reset flag after a short delay to allow re-renders
+      setTimeout(() => setIsChangingLanguage(false), 100);
+    }
+  }, [currentLanguage]);
+
+  const toggleLanguage = useCallback(() => {
     const currentIndex = LANGUAGES.findIndex(l => l.code === currentLanguage);
     const nextIndex = (currentIndex + 1) % LANGUAGES.length;
-    setCurrentLanguage(LANGUAGES[nextIndex].code);
-  };
+    setLanguage(LANGUAGES[nextIndex].code);
+  }, [currentLanguage, setLanguage]);
 
-  const setLanguage = (code) => {
-    if (LANGUAGES.some(l => l.code === code)) {
-      setCurrentLanguage(code);
-    }
-  };
-
-  const getCurrentLanguageInfo = () => {
+  const getCurrentLanguageInfo = useCallback(() => {
     return LANGUAGES.find(l => l.code === currentLanguage) || LANGUAGES[0];
-  };
+  }, [currentLanguage]);
+
+  const getNextLanguageInfo = useCallback(() => {
+    const currentIndex = LANGUAGES.findIndex(l => l.code === currentLanguage);
+    const nextIndex = (currentIndex + 1) % LANGUAGES.length;
+    return LANGUAGES[nextIndex];
+  }, [currentLanguage]);
 
   return (
     <LanguageContext.Provider value={{
@@ -41,7 +70,9 @@ export const LanguageProvider = ({ children }) => {
       setLanguage,
       toggleLanguage,
       getCurrentLanguageInfo,
-      languages: LANGUAGES
+      getNextLanguageInfo,
+      languages: LANGUAGES,
+      isChangingLanguage
     }}>
       {children}
     </LanguageContext.Provider>
@@ -55,3 +86,5 @@ export const useLanguage = () => {
   }
   return context;
 };
+
+export { LANGUAGES };
