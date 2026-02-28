@@ -289,6 +289,13 @@ export const DiseasePage = () => {
     return disease?.[mediaKey] || [];
   };
 
+  // Placeholder for media change - media editing is separate from inline text editing
+  const handleSectionMediaChange = async (sectionId, newMedia) => {
+    // TODO: Implement media change handling separately
+    // For now, this is a no-op as media editing needs its own save flow
+    console.log('Media change for section:', sectionId, newMedia);
+  };
+
   const scrollToSection = (sectionId) => {
     const element = sectionRefs.current[sectionId];
     if (element) {
