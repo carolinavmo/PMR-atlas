@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import { MainLayout } from '../components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
@@ -15,6 +16,7 @@ const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export const DashboardPage = () => {
   const { user, getAuthHeaders } = useAuth();
+  const { t } = useLanguage();
   const [stats, setStats] = useState(null);
   const [recentViews, setRecentViews] = useState([]);
   const [bookmarks, setBookmarks] = useState([]);
