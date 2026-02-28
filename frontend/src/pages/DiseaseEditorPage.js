@@ -440,7 +440,7 @@ export const DiseaseEditorPage = () => {
               <div className="flex gap-3 pt-4 border-t">
                 <Button
                   type="submit"
-                  className="bg-sage-600 hover:bg-sage-700"
+                  className="bg-blue-600 hover:bg-blue-700"
                   disabled={saving}
                   data-testid="save-disease-btn"
                 >
