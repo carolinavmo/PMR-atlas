@@ -703,7 +703,7 @@ async def inline_save_and_translate(
     request: InlineSaveAndTranslateRequest,
     user: dict = Depends(get_current_user)
 ):
-    """Save disease content and translate to other languages"""
+    """Save single section content and translate to other languages"""
     if user["role"] != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Only admins can edit diseases")
     
@@ -714,16 +714,15 @@ async def inline_save_and_translate(
     now = datetime.now(timezone.utc).isoformat()
     update_data = {"updated_at": now}
     
-    # First, save the source language content
-    for field, content in request.fields.items():
-        # Sanitize input
-        sanitized = re.sub(r'<script[^>]*>.*?</script>', '', content, flags=re.IGNORECASE | re.DOTALL)
-        sanitized = re.sub(r'on\w+\s*=', '', sanitized, flags=re.IGNORECASE)
-        
-        if request.source_language == "en":
-            update_data[field] = sanitized
-        else:
-            update_data[f"{field}_{request.source_language}"] = sanitized
+    # Sanitize content
+    sanitized = re.sub(r'<script[^>]*>.*?</script>', '', request.content, flags=re.IGNORECASE | re.DOTALL)
+    sanitized = re.sub(r'on\w+\s*=', '', sanitized, flags=re.IGNORECASE)
+    
+    # Save source language content
+    if request.source_language == "en":
+        update_data[request.section_id] = sanitized
+    else:
+        update_data[f"{request.section_id}_{request.source_language}"] = sanitized
     
     # Translate to target languages
     source_lang_name = LANGUAGE_NAMES.get(request.source_language, 'English')
@@ -738,7 +737,7 @@ async def inline_save_and_translate(
             
             chat = LlmChat(
                 api_key=EMERGENT_LLM_KEY,
-                session_id=f"translate-inline-{uuid.uuid4()}",
+                session_id=f"translate-section-{uuid.uuid4()}",
                 system_message=f"""You are a professional medical translator. Translate medical/clinical text from {source_lang_name} to {target_lang_name}. 
 
 Rules:
@@ -747,24 +746,36 @@ Rules:
 - Only output the translated text, nothing else"""
             ).with_model("openai", "gpt-4.1-mini")
             
-            for field, content in request.fields.items():
-                if content and content.strip():
-                    user_message = UserMessage(text=content)
-                    translated = await chat.send_message(user_message)
-                    
-                    if target_lang == "en":
-                        update_data[field] = translated
-                    else:
-                        update_data[f"{field}_{target_lang}"] = translated
-                    translated_count += 1
+            if sanitized and sanitized.strip():
+                user_message = UserMessage(text=sanitized)
+                translated = await chat.send_message(user_message)
+                
+                if target_lang == "en":
+                    update_data[request.section_id] = translated
+                else:
+                    update_data[f"{request.section_id}_{target_lang}"] = translated
+                translated_count += 1
     except Exception as e:
         logger.error(f"Translation error: {str(e)}")
         # Still save the source language even if translation fails
     
-    # Update metadata
+    # Update section-level edit metadata
+    section_meta_key = f"{request.section_id}_edit_meta"
+    section_meta = {
+        "last_edited_at": now,
+        "last_edited_by": user["id"],
+        "last_edited_by_name": user.get("name", "Admin"),
+        "last_edited_language": request.source_language,
+        "translated_at": now,
+        "translated_to": request.target_languages
+    }
+    update_data[section_meta_key] = section_meta
+    
+    # Update global metadata
     update_data["last_edited_language"] = request.source_language
     update_data["last_edited_at"] = now
     update_data["last_edited_by"] = user["id"]
+    update_data["last_edited_section"] = request.section_id
     update_data["last_translation_source"] = request.source_language
     update_data["last_translation_at"] = now
     update_data["version"] = disease.get("version", 1) + 1
@@ -782,7 +793,8 @@ Rules:
         "data": updated,
         "created_by": user["id"],
         "created_at": now,
-        "edit_type": "save_and_translate",
+        "edit_type": "section_save_and_translate",
+        "section_id": request.section_id,
         "source_language": request.source_language,
         "target_languages": request.target_languages
     })
