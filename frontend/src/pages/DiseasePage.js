@@ -80,50 +80,109 @@ export const DiseasePage = () => {
       fetchNote();
       recordView();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  // Effect to handle language change - trigger translation if needed
+  // Reset edit mode when language changes
   useEffect(() => {
-    if (disease && currentLanguage !== 'en' && id) {
-      // Check if translation exists for this language
-      const hasTranslation = disease[`definition_${currentLanguage}`];
-      if (!hasTranslation) {
-        // Trigger translation
-        translateToLanguage(currentLanguage);
-      }
+    if (editMode) {
+      // When switching language, reload the editable fields for the new language
+      initializeEditFields();
     }
-  }, [currentLanguage, disease?.id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentLanguage]);
 
-  const translateToLanguage = async (targetLang) => {
-    if (!isEditor) return; // Only editors can trigger translation
+  // Initialize editable fields with current content
+  const initializeEditFields = useCallback(() => {
+    if (!disease) return;
     
-    setTranslating(true);
+    const fields = {};
+    sectionDefs.forEach(s => {
+      if (s.id === 'references') return; // Skip references for now
+      fields[s.id] = getCurrentContent(s.id) || '';
+    });
+    fields['name'] = getDiseaseName() || '';
+    setEditedFields(fields);
+  }, [disease, currentLanguage]);
+
+  // Enter edit mode
+  const enterEditMode = () => {
+    initializeEditFields();
+    setEditMode(true);
+  };
+
+  // Exit edit mode without saving
+  const cancelEditMode = () => {
+    setEditMode(false);
+    setEditedFields({});
+  };
+
+  // Handle field change
+  const handleFieldChange = (fieldId, value) => {
+    setEditedFields(prev => ({
+      ...prev,
+      [fieldId]: value
+    }));
+  };
+
+  // Save only the current language
+  const saveCurrentLanguageOnly = async () => {
+    setSaving(true);
     try {
       const headers = getAuthHeaders();
-      await axios.post(
-        `${API_URL}/translate-disease/${id}?target_language=${targetLang}`,
-        {},
+      await axios.put(
+        `${API_URL}/diseases/${id}/inline-save`,
+        {
+          language: currentLanguage,
+          fields: editedFields
+        },
         { headers }
       );
-      // Refresh disease data to get translations
+      
       await fetchDisease();
-      toast.success(`Translated to ${targetLang === 'pt' ? 'Portuguese' : 'Spanish'}`);
+      setEditMode(false);
+      setEditedFields({});
+      toast.success(`Saved in ${LANGUAGE_NAMES[currentLanguage]}`);
     } catch (err) {
-      console.error('Translation error:', err);
-      toast.error('Translation failed. Content shown in English.');
+      console.error('Save error:', err);
+      toast.error('Failed to save changes');
     } finally {
-      setTranslating(false);
+      setSaving(false);
     }
   };
 
-  useEffect(() => {
-    if (id) {
-      fetchDisease();
-      checkBookmark();
-      fetchNote();
-      recordView();
+  // Save and translate to other languages
+  const saveAndTranslate = async () => {
+    setShowTranslateConfirm(false);
+    setSaving(true);
+    setTranslating(true);
+    
+    try {
+      const headers = getAuthHeaders();
+      const targetLanguages = languages.map(l => l.code).filter(c => c !== currentLanguage);
+      
+      await axios.put(
+        `${API_URL}/diseases/${id}/inline-save-translate`,
+        {
+          source_language: currentLanguage,
+          fields: editedFields,
+          target_languages: [...targetLanguages, currentLanguage]
+        },
+        { headers }
+      );
+      
+      await fetchDisease();
+      setEditMode(false);
+      setEditedFields({});
+      toast.success(`Saved and translated to all languages`);
+    } catch (err) {
+      console.error('Save & translate error:', err);
+      toast.error('Failed to save and translate');
+    } finally {
+      setSaving(false);
+      setTranslating(false);
     }
-  }, [id]);
+  };
 
   // Scroll spy for TOC
   useEffect(() => {
