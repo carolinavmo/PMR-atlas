@@ -250,10 +250,7 @@ export const MainLayout = ({ children }) => {
                                 <IconComponent iconName={category.icon} />
                                 <span className="text-sm truncate">{category.name}</span>
                               </div>
-                              <div className="flex items-center gap-1 flex-shrink-0">
-                                <Badge variant="secondary" className="text-xs h-5 min-w-[24px] justify-center">
-                                  {filteredDiseases.length}
-                                </Badge>
+                              <div className="flex items-center flex-shrink-0">
                                 {isExpanded ? (
                                   <ChevronDown className="w-4 h-4 text-slate-400" />
                                 ) : (
