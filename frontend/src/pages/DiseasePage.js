@@ -451,13 +451,14 @@ export const DiseasePage = () => {
 
           {/* Continuous Content Sections */}
           <div className="disease-content">
-            {sections.filter(s => s.id !== 'media').map((section) => {
+            {sections.map((section) => {
               const content = getCurrentContent(section.id);
+              const sectionMedia = getSectionMedia(section.id);
               const isEditing = editingSection === section.id;
               
-              // Skip empty sections in read mode
-              if (!isEditing && !content && section.id !== 'references') return null;
-              if (section.id === 'references' && Array.isArray(content) && content.length === 0 && !isEditing) return null;
+              // Skip empty sections in read mode (but show if has media)
+              if (!isEditing && !content && sectionMedia.length === 0 && section.id !== 'references') return null;
+              if (section.id === 'references' && Array.isArray(content) && content.length === 0 && !isEditing && sectionMedia.length === 0) return null;
               
               return (
                 <div 
@@ -483,8 +484,16 @@ export const DiseasePage = () => {
                     )}
                   </div>
                   
+                  {/* Media positioned BEFORE text */}
+                  <SectionMedia
+                    media={sectionMedia}
+                    onChange={(newMedia) => handleSectionMediaChange(section.id, newMedia)}
+                    readOnly={!isEditor}
+                    position="before"
+                  />
+                  
                   {isEditing && section.id !== 'references' ? (
-                    <div className="mb-6">
+                    <div className="mb-4">
                       <RichTextEditor
                         value={content}
                         onChange={(value) => handleSectionEdit(section.id, value)}
@@ -501,22 +510,28 @@ export const DiseasePage = () => {
                       </div>
                     </div>
                   ) : (
-                    <div className="mb-6">
+                    <div className="mb-4 clearfix">
+                      {/* Media positioned INLINE (left/right/center) */}
+                      <SectionMedia
+                        media={sectionMedia}
+                        onChange={(newMedia) => handleSectionMediaChange(section.id, newMedia)}
+                        readOnly={!isEditor}
+                        position="inline"
+                      />
                       {renderSectionContent(section.id, content)}
                     </div>
                   )}
+                  
+                  {/* Media positioned AFTER text + Add button */}
+                  <SectionMedia
+                    media={sectionMedia}
+                    onChange={(newMedia) => handleSectionMediaChange(section.id, newMedia)}
+                    readOnly={!isEditor}
+                    position="after"
+                  />
                 </div>
               );
             })}
-
-            {/* Media Section */}
-            <div ref={el => sectionRefs.current['media'] = el}>
-              <MediaSection
-                images={getCurrentContent('images') || disease.images || []}
-                onChange={handleMediaChange}
-                readOnly={!isEditor}
-              />
-            </div>
           </div>
 
           {/* Version Info */}
