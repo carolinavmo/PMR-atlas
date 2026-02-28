@@ -661,16 +661,17 @@ export const DiseasePage = () => {
               const sectionMedia = getSectionMedia(section.id);
               const editMeta = getSectionEditMeta(section.id);
               const isEditing = editingSection === section.id;
+              const isEditingMedia = editingMediaSection === section.id;
               
-              // Skip empty sections in view mode (except if references)
-              if (!isEditing && !content && sectionMedia.length === 0 && section.id !== 'references') return null;
-              if (!isEditing && section.id === 'references' && Array.isArray(content) && content.length === 0 && sectionMedia.length === 0) return null;
+              // Skip empty sections in view mode (except if references or editing media)
+              if (!isEditing && !isEditingMedia && !content && sectionMedia.length === 0 && section.id !== 'references') return null;
+              if (!isEditing && !isEditingMedia && section.id === 'references' && Array.isArray(content) && content.length === 0 && sectionMedia.length === 0) return null;
               
               return (
                 <div 
                   key={section.id} 
                   ref={el => sectionRefs.current[section.id] = el}
-                  className={`w-full mb-6 ${isEditing ? 'p-4 rounded-lg border-2 border-blue-400 bg-blue-50/50 dark:bg-blue-900/20' : ''}`}
+                  className={`w-full mb-6 ${isEditing ? 'p-4 rounded-lg border-2 border-blue-400 bg-blue-50/50 dark:bg-blue-900/20' : ''} ${isEditingMedia ? 'p-4 rounded-lg border-2 border-purple-400 bg-purple-50/50 dark:bg-purple-900/20' : ''}`}
                   data-testid={`section-${section.id}`}
                 >
                   {/* Section Header */}
