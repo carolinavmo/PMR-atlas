@@ -336,7 +336,7 @@ export const MainLayout = ({ children }) => {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-4 lg:p-6 overflow-auto main-content">
+        <main className="flex-1 p-4 lg:p-6 overflow-visible">
           {children}
         </main>
       </div>
