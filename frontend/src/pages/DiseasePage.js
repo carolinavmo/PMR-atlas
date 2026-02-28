@@ -272,6 +272,41 @@ export const DiseasePage = () => {
     }
   };
 
+  // Start editing media for a section
+  const startMediaEdit = (sectionId) => {
+    setEditingMediaSection(sectionId);
+  };
+
+  // Cancel media editing
+  const cancelMediaEdit = () => {
+    setEditingMediaSection(null);
+  };
+
+  // Save section media
+  const saveSectionMedia = async (sectionId, newMedia) => {
+    setSavingMedia(true);
+    try {
+      const headers = getAuthHeaders();
+      await axios.put(
+        `${API_URL}/diseases/${id}/section-media`,
+        {
+          section_id: sectionId,
+          media: newMedia
+        },
+        { headers }
+      );
+      
+      await fetchDisease();
+      setEditingMediaSection(null);
+      toast.success('Media saved successfully');
+    } catch (err) {
+      console.error('Save media error:', err);
+      toast.error('Failed to save media');
+    } finally {
+      setSavingMedia(false);
+    }
+  };
+
   const scrollToSection = (sectionId) => {
     const element = sectionRefs.current[sectionId];
     if (element) {
