@@ -556,8 +556,8 @@ export const DiseasePage = () => {
             </div>
           )}
 
-          {/* Continuous Content Sections */}
-          <div className="disease-content">
+          {/* Continuous Content Sections - Full Width */}
+          <div className="disease-content w-full">
             {sections.map((section) => {
               const content = getCurrentContent(section.id);
               const sectionMedia = getSectionMedia(section.id);
@@ -571,11 +571,11 @@ export const DiseasePage = () => {
                 <div 
                   key={section.id} 
                   ref={el => sectionRefs.current[section.id] = el}
-                  className="editable-section"
+                  className="editable-section w-full"
                   data-testid={`section-${section.id}`}
                 >
-                  <div className="flex items-center justify-between group">
-                    <h3 className="section-heading" id={section.id}>
+                  <div className="flex items-center justify-between group w-full">
+                    <h3 className="section-heading flex-1" id={section.id}>
                       {section.label}
                     </h3>
                     {isEditor && !isEditing && (
