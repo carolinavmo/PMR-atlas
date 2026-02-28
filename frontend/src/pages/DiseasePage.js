@@ -575,7 +575,7 @@ export const DiseasePage = () => {
                   data-testid={`section-${section.id}`}
                 >
                   <div className="flex items-center justify-between group w-full">
-                    <h3 className="section-heading flex-1" id={section.id}>
+                    <h3 className="section-heading flex-grow" id={section.id} style={{width: '100%'}}>
                       {section.label}
                     </h3>
                     {isEditor && !isEditing && (
