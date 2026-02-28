@@ -1,0 +1,154 @@
+{
+  "project_name": "PMR Education Platform",
+  "design_identity": {
+    "persona": "E1 - The Anti-AI Designer",
+    "theme_name": "Clinical Zen (Pastel + Swiss Grid)",
+    "core_philosophy": "Controlled Clarity. Information is dense but never overwhelming. The UI feels like a modern, interactive medical atlas.",
+    "emotional_tone": "Trustworthy, Calm, Structured, Focused.",
+    "archetype": "Archetype 3 (Pastel & Soft) mixed with Archetype 4 (Swiss/High-Contrast) for data density."
+  },
+  "typography": {
+    "font_family_headings": "Plus Jakarta Sans, sans-serif",
+    "font_family_body": "IBM Plex Sans, sans-serif",
+    "font_family_code": "JetBrains Mono, monospace",
+    "scaling": {
+      "h1": "text-4xl md:text-5xl font-bold tracking-tight leading-tight",
+      "h2": "text-3xl md:text-4xl font-semibold tracking-tight",
+      "h3": "text-2xl font-semibold tracking-normal",
+      "body_lg": "text-lg leading-relaxed text-slate-700 dark:text-slate-300",
+      "body_base": "text-base leading-7 text-slate-600 dark:text-slate-400",
+      "caption": "text-sm font-medium tracking-wide uppercase text-slate-500"
+    },
+    "rules": [
+      "No Inter for Headings.",
+      "Use 'tracking-tight' for all headings larger than 24px.",
+      "Body text must have 'leading-relaxed' (1.625) for readability of dense medical content."
+    ]
+  },
+  "colors": {
+    "palette_name": "Rehabilitative Sage",
+    "mode": "light",
+    "background": {
+      "default": "#F9FAFB",
+      "paper": "#FFFFFF",
+      "sidebar": "#F0FDF4"
+    },
+    "primary": {
+      "DEFAULT": "#10B981",
+      "foreground": "#FFFFFF",
+      "50": "#ECFDF5",
+      "100": "#D1FAE5",
+      "500": "#10B981",
+      "600": "#059669",
+      "900": "#064E3B"
+    },
+    "secondary": {
+      "DEFAULT": "#A78BFA",
+      "foreground": "#FFFFFF",
+      "100": "#EDE9FE",
+      "400": "#A78BFA"
+    },
+    "accent": {
+      "DEFAULT": "#FB7185",
+      "foreground": "#FFFFFF"
+    },
+    "neutral": {
+      "50": "#F8FAFC",
+      "100": "#F1F5F9",
+      "200": "#E2E8F0",
+      "800": "#1E293B",
+      "900": "#0F172A"
+    },
+    "semantic": {
+      "success": "#34D399",
+      "warning": "#FBBF24",
+      "error": "#F87171",
+      "info": "#60A5FA"
+    },
+    "contrast_rules": [
+      "Text on pastel backgrounds must be Dark Slate (900), never grey.",
+      "Interactive elements must have a contrast ratio of 3:1.",
+      "Use 'ring-offset-2' for focus states."
+    ]
+  },
+  "layout_strategy": {
+    "grid_system": "The Digital Atlas Layout",
+    "modes": {
+      "dashboard": "Fixed Left Sidebar (260px) + Main Content (Flex 1)",
+      "reading_view": "Fixed Left Sidebar (260px) + Main Content (Max-w-3xl centered) + Right TOC (Hidden on mobile)",
+      "marketing": "Full width, 'Bento' grid sections"
+    },
+    "spacing": {
+      "container_padding": "p-6 md:p-10 lg:p-12",
+      "card_padding": "p-6",
+      "section_gap": "gap-8 md:gap-12"
+    },
+    "z_index": {
+      "sidebar": 40,
+      "header": 30,
+      "modal": 50,
+      "toast": 60
+    }
+  },
+  "components": {
+    "library": "shadcn/ui",
+    "customization_rules": [
+      "Radius: rounded-lg (0.5rem) or rounded-xl (0.75rem).",
+      "Shadows: shadow-sm for cards, shadow-md for floating elements. Avoid heavy shadows.",
+      "Borders: 1px solid border-slate-200. Crucial for the 'Swiss' look.",
+      "Inputs: bg-slate-50 border-transparent focus:border-primary focus:bg-white transition-all."
+    ],
+    "specific_components": {
+      "Button": "Pill shape for primary actions, ghost for navigation.",
+      "Card": "Flat, 1px border, white background. Header distinct from body.",
+      "Badge": "Pastel background + Dark text (e.g., bg-green-100 text-green-800).",
+      "Table": "Clean rows, no vertical borders, hover effect on rows."
+    },
+    "visual_enhancers": {
+      "glassmorphism": "Use sparingly. Sidebar can have backdrop-blur-lg if overlapping.",
+      "gradients": "No full-screen gradients. Use subtle mesh gradients in Hero sections only.",
+      "textures": "Use noise overlay (opacity 0.03) on solid backgrounds to reduce digital harshness."
+    }
+  },
+  "interactive_elements": {
+    "motion": {
+      "type": "Scientific Precision",
+      "duration": "duration-200",
+      "easing": "ease-out",
+      "hover_effects": "translate-y-[-2px] shadow-md"
+    },
+    "feedback": {
+      "loading": "Skeleton loaders matching the layout structure.",
+      "success": "Sonner toast (bottom-right).",
+      "error": "Inline error messages + Shake animation on forms."
+    }
+  },
+  "assets": {
+    "icons": "Lucide React (Stroke width 1.5px for elegance).",
+    "images": {
+      "landing_hero": "https://images.unsplash.com/photo-1729339983367-770c2527ce75?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTB8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBtZWRpY2FsJTIwZWR1Y2F0aW9uJTIwYWJzdHJhY3QlMjBhbmF0b215JTIwcGFzdGVsfGVufDB8fHx8MTc3MjI3Mjc4MXww&ixlib=rb-4.1.0&q=85",
+      "doctor_tablet": "https://images.unsplash.com/photo-1631217872822-1c2546d6b864?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MDZ8MHwxfHNlYXJjaHwxfHxkb2N0b3IlMjBsb29raW5nJTIwYXQlMjBkaWdpdGFsJTIwdGFibGV0JTIwbWVkaWNhbCUyMHJlc2VhcmNofGVufDB8fHx8MTc3MjI3Mjc4Mnww&ixlib=rb-4.1.0&q=85",
+      "anatomy_detail": "https://images.unsplash.com/photo-1729339983290-a45d3b4ecc1d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTB8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjBtZWRpY2FsJTIwZWR1Y2F0aW9uJTIwYWJzdHJhY3QlMjBhbmF0b215JTIwcGFzdGVsfGVufDB8fHx8MTc3MjI3Mjc4MXww&ixlib=rb-4.1.0&q=85"
+    }
+  },
+  "implementation_steps": [
+    "1. Setup Tailwind Theme: Add 'Plus Jakarta Sans' and 'IBM Plex Sans' to fontFamily. Define 'Sage' as primary color.",
+    "2. Create Layout Shell: Sidebar (Collapsible), Top Header (Search + User), Main Content Area.",
+    "3. Build Auth Pages: Login/Register with split layout (Image Left, Form Right).",
+    "4. Develop Dashboard: 'Bento' grid for 'Recently Viewed', 'Bookmarks', 'New Diseases'.",
+    "5. Create Disease Detail Template: Header (Title + Tags), Content (Markdown/Rich Text), Right Sidebar (Quick Facts/TOC).",
+    "6. Build Admin Panel: Table views for Users/Diseases, WYSIWYG editor integration."
+  ],
+  "universal_guidelines": [
+    "You tend to converge toward generic outputs. Avoid this.",
+    "Dark colors look good when used independently without gradients.",
+    "Create depth through layered design elements with z-index hierarchy.",
+    "Use glass-morphism effects with backdrop filters (12-24px blur).",
+    "You MUST NOT apply universal transition (transition: all).",
+    "Every interaction needs micro-animations - hover states, transitions.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "Prioritize using pre-existing components from src/components/ui.",
+    "Components MUST use named exports.",
+    "Use 'sonner' for toasts."
+  ]
+}
