@@ -1,18 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { MainLayout } from '../components/layout/MainLayout';
-import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
-import { ScrollArea } from '../components/ui/scroll-area';
 import { Separator } from '../components/ui/separator';
+import { RichTextEditor } from '../components/editor/RichTextEditor';
+import { MediaSection } from '../components/editor/MediaSection';
 import { toast } from 'sonner';
 import axios from 'axios';
 import { 
-  Bookmark, BookmarkCheck, FileText, ChevronRight, Edit,
-  ArrowLeft, Share2, Printer, Clock
+  Bookmark, BookmarkCheck, FileText, Edit, Pencil, Check, X,
+  ArrowLeft, Save, Clock
 } from 'lucide-react';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -32,6 +32,7 @@ const sections = [
   { id: 'rehabilitation_protocol', label: 'Rehabilitation Protocol' },
   { id: 'prognosis', label: 'Prognosis' },
   { id: 'references', label: 'References' },
+  { id: 'media', label: 'Media & Images' },
 ];
 
 export const DiseasePage = () => {
@@ -45,6 +46,13 @@ export const DiseasePage = () => {
   const [showNotes, setShowNotes] = useState(false);
   const [savingNote, setSavingNote] = useState(false);
   const [activeSection, setActiveSection] = useState('definition');
+  const [editingSection, setEditingSection] = useState(null);
+  const [editedContent, setEditedContent] = useState({});
+  const [saving, setSaving] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
+
+  const contentRef = useRef(null);
+  const sectionRefs = useRef({});
 
   useEffect(() => {
     if (id) {
@@ -55,10 +63,35 @@ export const DiseasePage = () => {
     }
   }, [id]);
 
+  // Scroll spy for TOC
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!contentRef.current) return;
+      
+      const scrollPosition = window.scrollY + 150;
+      
+      for (const section of sections) {
+        const element = sectionRefs.current[section.id];
+        if (element) {
+          const { offsetTop, offsetHeight } = element;
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveSection(section.id);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [disease]);
+
   const fetchDisease = async () => {
     try {
       const response = await axios.get(`${API_URL}/diseases/${id}`);
       setDisease(response.data);
+      setEditedContent({});
+      setHasChanges(false);
     } catch (err) {
       console.error('Failed to fetch disease:', err);
       toast.error('Failed to load disease');
@@ -132,6 +165,57 @@ export const DiseasePage = () => {
     }
   };
 
+  const handleSectionEdit = (sectionId, value) => {
+    setEditedContent(prev => ({
+      ...prev,
+      [sectionId]: value
+    }));
+    setHasChanges(true);
+  };
+
+  const handleMediaChange = (newImages) => {
+    setEditedContent(prev => ({
+      ...prev,
+      images: newImages.map(img => typeof img === 'string' ? img : img.url)
+    }));
+    setHasChanges(true);
+  };
+
+  const saveAllChanges = async () => {
+    setSaving(true);
+    try {
+      const headers = getAuthHeaders();
+      const updateData = { ...editedContent };
+      
+      await axios.put(`${API_URL}/diseases/${id}`, updateData, { headers });
+      
+      // Refresh disease data
+      await fetchDisease();
+      toast.success('Changes saved successfully');
+      setEditingSection(null);
+    } catch (err) {
+      toast.error('Failed to save changes');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const discardChanges = () => {
+    setEditedContent({});
+    setHasChanges(false);
+    setEditingSection(null);
+  };
+
+  const scrollToSection = (sectionId) => {
+    const element = sectionRefs.current[sectionId];
+    if (element) {
+      const yOffset = -100;
+      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+      setActiveSection(sectionId);
+    }
+  };
+
   const getTagClass = (tag) => {
     const tagClasses = {
       acute: 'tag-badge acute',
@@ -146,10 +230,20 @@ export const DiseasePage = () => {
     return tagClasses[tag] || 'tag-badge';
   };
 
-  const renderContent = (content) => {
+  const getCurrentContent = (sectionId) => {
+    if (editedContent.hasOwnProperty(sectionId)) {
+      return editedContent[sectionId];
+    }
+    if (sectionId === 'references') {
+      return disease?.references || [];
+    }
+    return disease?.[sectionId] || '';
+  };
+
+  const renderSectionContent = (sectionId, content) => {
     if (!content) return <p className="text-slate-400 italic">No information available</p>;
     
-    // Handle array content (like references)
+    // Handle array content (references)
     if (Array.isArray(content)) {
       if (content.length === 0) return <p className="text-slate-400 italic">No references</p>;
       return (
@@ -165,18 +259,18 @@ export const DiseasePage = () => {
     const lines = content.split('\n').filter(line => line.trim());
     
     return (
-      <div className="space-y-2">
+      <div className="section-content">
         {lines.map((line, i) => {
-          if (line.startsWith('- ')) {
+          if (line.startsWith('- ') || line.startsWith('• ')) {
             return (
-              <div key={i} className="flex gap-2 text-slate-600 dark:text-slate-400">
-                <span className="text-sage-500 mt-1">•</span>
+              <div key={i} className="flex gap-2 mb-1">
+                <span className="text-blue-500 mt-0.5">•</span>
                 <span>{line.substring(2)}</span>
               </div>
             );
           }
           return (
-            <p key={i} className="text-slate-600 dark:text-slate-400 leading-relaxed">
+            <p key={i} className="mb-2">
               {line}
             </p>
           );
@@ -217,9 +311,9 @@ export const DiseasePage = () => {
 
   return (
     <MainLayout>
-      <div className="flex gap-6" data-testid="disease-page">
+      <div className="flex gap-8" data-testid="disease-page" ref={contentRef}>
         {/* Main Content */}
-        <div className="flex-1 max-w-4xl">
+        <div className="flex-1 max-w-3xl">
           {/* Back Button */}
           <Link to="/dashboard" className="inline-flex items-center text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 mb-4">
             <ArrowLeft className="w-4 h-4 mr-1" />
@@ -230,22 +324,14 @@ export const DiseasePage = () => {
           <div className="mb-8">
             <div className="flex items-start justify-between gap-4 mb-4">
               <div>
-                <Badge variant="outline" className="mb-2 text-sage-600 border-sage-300">
+                <Badge variant="outline" className="mb-2 text-blue-600 border-blue-300">
                   {disease.category_name}
                 </Badge>
                 <h1 className="text-3xl lg:text-4xl font-heading font-bold text-slate-900 dark:text-white" data-testid="disease-title">
                   {disease.name}
                 </h1>
               </div>
-              <div className="flex items-center gap-2">
-                {isEditor && (
-                  <Link to={`/admin/diseases/${disease.id}/edit`}>
-                    <Button variant="outline" size="sm" data-testid="edit-btn">
-                      <Edit className="w-4 h-4 mr-1" />
-                      Edit
-                    </Button>
-                  </Link>
-                )}
+              <div className="flex items-center gap-2 flex-shrink-0">
                 <Button
                   variant="outline"
                   size="sm"
@@ -258,7 +344,7 @@ export const DiseasePage = () => {
                   ) : (
                     <Bookmark className="w-4 h-4 mr-1" />
                   )}
-                  {isBookmarked ? 'Bookmarked' : 'Bookmark'}
+                  {isBookmarked ? 'Saved' : 'Save'}
                 </Button>
                 <Button
                   variant="outline"
@@ -274,7 +360,7 @@ export const DiseasePage = () => {
 
             {/* Tags */}
             {disease.tags?.length > 0 && (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 mb-4">
                 {disease.tags.map((tag) => (
                   <span key={tag} className={getTagClass(tag)} data-testid={`tag-${tag}`}>
                     {tag}
@@ -282,92 +368,158 @@ export const DiseasePage = () => {
                 ))}
               </div>
             )}
+
+            {/* Save Changes Bar */}
+            {hasChanges && isEditor && (
+              <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg mb-4">
+                <span className="text-sm text-blue-700 dark:text-blue-300">You have unsaved changes</span>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={discardChanges}>
+                    <X className="w-4 h-4 mr-1" />
+                    Discard
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    onClick={saveAllChanges}
+                    disabled={saving}
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    <Save className="w-4 h-4 mr-1" />
+                    {saving ? 'Saving...' : 'Save Changes'}
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Notes Panel */}
           {showNotes && (
-            <Card className="mb-6" data-testid="notes-panel">
-              <CardContent className="pt-6">
-                <h3 className="text-lg font-heading font-semibold mb-3">Personal Notes</h3>
-                <Textarea
-                  placeholder="Write your notes about this disease..."
-                  value={note}
-                  onChange={(e) => setNote(e.target.value)}
-                  className="min-h-[120px] mb-3"
-                  data-testid="notes-textarea"
-                />
-                <Button 
-                  onClick={saveNote} 
-                  disabled={savingNote}
-                  className="bg-sage-600 hover:bg-sage-700"
-                  data-testid="save-notes-btn"
-                >
-                  {savingNote ? 'Saving...' : 'Save Notes'}
-                </Button>
-              </CardContent>
-            </Card>
+            <div className="mb-8 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700" data-testid="notes-panel">
+              <h3 className="text-lg font-heading font-semibold mb-3">Personal Notes</h3>
+              <Textarea
+                placeholder="Write your notes about this disease..."
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                className="min-h-[120px] mb-3 bg-white dark:bg-slate-900"
+                data-testid="notes-textarea"
+              />
+              <Button 
+                onClick={saveNote} 
+                disabled={savingNote}
+                className="bg-blue-600 hover:bg-blue-700"
+                data-testid="save-notes-btn"
+              >
+                {savingNote ? 'Saving...' : 'Save Notes'}
+              </Button>
+            </div>
           )}
 
-          {/* Content Sections */}
-          <div className="space-y-6 disease-content">
-            {sections.map((section) => {
-              const content = section.id === 'references' ? disease.references : disease[section.id];
-              if (!content || (Array.isArray(content) && content.length === 0 && section.id !== 'references')) return null;
+          {/* Continuous Content Sections */}
+          <div className="disease-content">
+            {sections.filter(s => s.id !== 'media').map((section) => {
+              const content = getCurrentContent(section.id);
+              const isEditing = editingSection === section.id;
+              
+              // Skip empty sections in read mode
+              if (!isEditing && !content && section.id !== 'references') return null;
+              if (section.id === 'references' && Array.isArray(content) && content.length === 0 && !isEditing) return null;
               
               return (
-                <Card key={section.id} id={section.id} className="scroll-mt-20" data-testid={`section-${section.id}`}>
-                  <CardContent className="pt-6">
-                    <h3 className="text-xl font-heading font-semibold text-slate-900 dark:text-white mb-4 pb-2 border-b border-slate-200 dark:border-slate-700">
+                <div 
+                  key={section.id} 
+                  ref={el => sectionRefs.current[section.id] = el}
+                  className="editable-section"
+                  data-testid={`section-${section.id}`}
+                >
+                  <div className="flex items-center justify-between group">
+                    <h3 className="section-heading" id={section.id}>
                       {section.label}
                     </h3>
-                    {renderContent(content)}
-                  </CardContent>
-                </Card>
+                    {isEditor && !isEditing && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => setEditingSection(section.id)}
+                      >
+                        <Pencil className="w-4 h-4 mr-1" />
+                        Edit
+                      </Button>
+                    )}
+                  </div>
+                  
+                  {isEditing && section.id !== 'references' ? (
+                    <div className="mb-6">
+                      <RichTextEditor
+                        value={content}
+                        onChange={(value) => handleSectionEdit(section.id, value)}
+                        placeholder={`Enter ${section.label.toLowerCase()}...`}
+                      />
+                      <div className="flex gap-2 mt-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setEditingSection(null)}
+                        >
+                          Done
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="mb-6">
+                      {renderSectionContent(section.id, content)}
+                    </div>
+                  )}
+                </div>
               );
             })}
+
+            {/* Media Section */}
+            <div ref={el => sectionRefs.current['media'] = el}>
+              <MediaSection
+                images={getCurrentContent('images') || disease.images || []}
+                onChange={handleMediaChange}
+                readOnly={!isEditor}
+              />
+            </div>
           </div>
 
           {/* Version Info */}
-          <div className="mt-8 text-sm text-slate-400 flex items-center gap-4">
+          <div className="mt-12 pt-6 border-t border-slate-200 dark:border-slate-700 text-sm text-slate-400 flex items-center gap-4">
+            <Clock className="w-4 h-4" />
             <span>Version {disease.version}</span>
             <span>•</span>
             <span>Last updated: {new Date(disease.updated_at).toLocaleDateString()}</span>
           </div>
         </div>
 
-        {/* Right Sidebar - Table of Contents */}
-        <div className="hidden xl:block w-64 shrink-0">
-          <div className="sticky top-24">
-            <Card>
-              <CardContent className="pt-6">
-                <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">
-                  On This Page
-                </h3>
-                <ScrollArea className="h-[calc(100vh-200px)]">
-                  <nav className="space-y-1">
-                    {sections.map((section) => {
-                      const content = section.id === 'references' ? disease.references : disease[section.id];
-                      if (!content || (Array.isArray(content) && content.length === 0 && section.id !== 'references')) return null;
-                      
-                      return (
-                        <a
-                          key={section.id}
-                          href={`#${section.id}`}
-                          className={`toc-item block py-1.5 text-sm transition-colors ${
-                            activeSection === section.id
-                              ? 'active text-sage-600 font-medium'
-                              : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
-                          }`}
-                          onClick={() => setActiveSection(section.id)}
-                        >
-                          {section.label}
-                        </a>
-                      );
-                    })}
-                  </nav>
-                </ScrollArea>
-              </CardContent>
-            </Card>
+        {/* Floating Table of Contents */}
+        <div className="hidden xl:block w-56 shrink-0">
+          <div className="toc-container">
+            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
+              <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-3">
+                On This Page
+              </h3>
+              <nav className="space-y-0.5">
+                {sections.map((section) => {
+                  const content = getCurrentContent(section.id);
+                  // Only show sections with content
+                  if (section.id !== 'media' && section.id !== 'references' && !content) return null;
+                  if (section.id === 'references' && Array.isArray(content) && content.length === 0) return null;
+                  if (section.id === 'media' && (!disease.images || disease.images.length === 0) && !isEditor) return null;
+                  
+                  return (
+                    <button
+                      key={section.id}
+                      onClick={() => scrollToSection(section.id)}
+                      className={`toc-link w-full text-left ${activeSection === section.id ? 'active' : ''}`}
+                    >
+                      {section.label}
+                    </button>
+                  );
+                })}
+              </nav>
+            </div>
           </div>
         </div>
       </div>
