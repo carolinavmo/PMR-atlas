@@ -66,6 +66,49 @@ export const DiseasePage = () => {
     }
   }, [id]);
 
+  // Effect to handle language change - trigger translation if needed
+  useEffect(() => {
+    if (disease && currentLanguage !== 'en' && id) {
+      // Check if translation exists for this language
+      const hasTranslation = disease[`definition_${currentLanguage}`];
+      if (!hasTranslation) {
+        // Trigger translation
+        translateToLanguage(currentLanguage);
+      }
+    }
+  }, [currentLanguage, disease?.id]);
+
+  const translateToLanguage = async (targetLang) => {
+    if (!isEditor) return; // Only editors can trigger translation
+    
+    setTranslating(true);
+    try {
+      const headers = getAuthHeaders();
+      await axios.post(
+        `${API_URL}/translate-disease/${id}?target_language=${targetLang}`,
+        {},
+        { headers }
+      );
+      // Refresh disease data to get translations
+      await fetchDisease();
+      toast.success(`Translated to ${targetLang === 'pt' ? 'Portuguese' : 'Spanish'}`);
+    } catch (err) {
+      console.error('Translation error:', err);
+      toast.error('Translation failed. Content shown in English.');
+    } finally {
+      setTranslating(false);
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      fetchDisease();
+      checkBookmark();
+      fetchNote();
+      recordView();
+    }
+  }, [id]);
+
   // Scroll spy for TOC
   useEffect(() => {
     const handleScroll = () => {
