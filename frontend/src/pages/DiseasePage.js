@@ -406,11 +406,21 @@ export const DiseasePage = () => {
           <div className="mb-8">
             <div className="flex items-start justify-between gap-4 mb-4">
               <div>
-                <Badge variant="outline" className="mb-2 text-blue-600 border-blue-300">
-                  {disease.category_name}
-                </Badge>
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge variant="outline" className="text-blue-600 border-blue-300">
+                    {disease.category_name}
+                  </Badge>
+                  {/* Language Switcher */}
+                  <LanguageSwitcher
+                    currentLanguage={currentLanguage}
+                    onLanguageChange={handleLanguageChange}
+                    diseaseId={id}
+                    getAuthHeaders={getAuthHeaders}
+                    onTranslationComplete={handleTranslationComplete}
+                  />
+                </div>
                 <h1 className="text-3xl lg:text-4xl font-heading font-bold text-slate-900 dark:text-white" data-testid="disease-title">
-                  {disease.name}
+                  {getDiseaseName()}
                 </h1>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
