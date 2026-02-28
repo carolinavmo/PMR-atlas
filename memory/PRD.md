@@ -36,6 +36,21 @@
 - [x] **Per-Section Edit Metadata** - Stored in `{section_id}_edit_meta` field with editor name, timestamp
 - [x] **API Endpoints** - `/api/diseases/{id}/inline-save` and `/api/diseases/{id}/inline-save-translate`
 
+### Per-Section Media Editing (Complete - Feb 28, 2026)
+- [x] **Media Button** - Appears on hover next to Edit button (admins only)
+- [x] **Media Edit Mode** - Purple border indicates media editing mode
+- [x] **Add Media Dialog** - Full-featured dialog with:
+  - Media Type: Image or Video
+  - Source: URL input or file upload ("Choose File")
+  - Size: 25%, 50%, 75%, 100% width
+  - Alignment: Before text, After text, Float left, Float right, Centered
+  - Description/Caption field
+- [x] **Media Display** - Images/videos displayed inline with proper alignment and caption
+- [x] **Video Support** - YouTube, Vimeo, and direct video URLs
+- [x] **Edit/Delete Overlay** - Hover over media to edit or remove
+- [x] **API Endpoint** - `/api/diseases/{id}/section-media`
+- [x] **Media Metadata** - Stored in `{section_id}_media_meta` field
+
 ### Category Reordering (Complete)
 - [x] **Drag-and-Drop Reordering** - Admins can drag categories in sidebar
 - [x] **Admin Panel Reorder** - Also available in Admin > Categories tab
