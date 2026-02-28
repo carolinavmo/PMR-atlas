@@ -311,14 +311,43 @@ export const DiseasePage = () => {
     }
   };
 
+  // Toggle section expand/collapse
+  const toggleSection = (sectionId) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [sectionId]: !prev[sectionId]
+    }));
+  };
+
+  // Expand all sections
+  const expandAllSections = () => {
+    const allExpanded = {};
+    sectionDefs.forEach(s => allExpanded[s.id] = true);
+    setExpandedSections(allExpanded);
+  };
+
+  // Collapse all sections
+  const collapseAllSections = () => {
+    setExpandedSections({});
+  };
+
   const scrollToSection = (sectionId) => {
-    const element = sectionRefs.current[sectionId];
-    if (element) {
-      const yOffset = -100;
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: 'smooth' });
-      setActiveSection(sectionId);
-    }
+    // Expand the section first
+    setExpandedSections(prev => ({
+      ...prev,
+      [sectionId]: true
+    }));
+    
+    // Small delay to allow expansion animation
+    setTimeout(() => {
+      const element = sectionRefs.current[sectionId];
+      if (element) {
+        const yOffset = -100;
+        const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+        setActiveSection(sectionId);
+      }
+    }, 100);
   };
 
   const getTagClass = (tag) => {
