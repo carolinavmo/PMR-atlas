@@ -274,8 +274,8 @@ export const AdminPage = () => {
         {/* Tabs */}
         <Tabs defaultValue="diseases" className="space-y-4">
           <TabsList>
-            <TabsTrigger value="diseases" data-testid="tab-diseases">Diseases</TabsTrigger>
-            <TabsTrigger value="categories" data-testid="tab-categories">Categories</TabsTrigger>
+            <TabsTrigger value="diseases" data-testid="tab-diseases">{t('diseasesManagement')}</TabsTrigger>
+            <TabsTrigger value="categories" data-testid="tab-categories">{t('categories')}</TabsTrigger>
             <TabsTrigger value="users" data-testid="tab-users">Users</TabsTrigger>
           </TabsList>
 
@@ -283,11 +283,11 @@ export const AdminPage = () => {
           <TabsContent value="diseases">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Diseases Management</CardTitle>
+                <CardTitle>{t('diseasesManagement')}</CardTitle>
                 <Link to="/admin/diseases/new">
                   <Button className="bg-blue-600 hover:bg-blue-700" data-testid="add-disease-btn">
                     <Plus className="w-4 h-4 mr-2" />
-                    Add Disease
+                    {t('addNewDisease')}
                   </Button>
                 </Link>
               </CardHeader>
