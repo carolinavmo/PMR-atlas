@@ -978,6 +978,8 @@ export const DiseasePage = () => {
                       />
                     </div>
                   )}
+                    </div>
+                  </div>
                 </div>
               );
             })}
