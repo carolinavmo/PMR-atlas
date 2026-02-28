@@ -216,30 +216,53 @@ export const MainLayout = ({ children }) => {
 
               <ScrollArea className="flex-1 px-2">
                 <div className="space-y-1 pb-4">
-                  {categories.map((category) => {
+                  {categories.map((category, index) => {
                     const filteredDiseases = getFilteredDiseases(category.id);
                     const isExpanded = expandedCategories[category.id];
                     
                     return (
                       <Collapsible key={category.id} open={isExpanded} onOpenChange={() => toggleCategory(category.id)}>
-                        <CollapsibleTrigger className="w-full" data-testid={`category-${category.id}`}>
-                          <div className="sidebar-item justify-between group">
-                            <div className="flex items-center gap-3">
-                              <IconComponent iconName={category.icon} />
-                              <span className="text-sm truncate">{category.name}</span>
+                        <div className="flex items-center group">
+                          {/* Admin reorder buttons */}
+                          {isAdmin && (
+                            <div className="flex flex-col mr-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button
+                                onClick={(e) => { e.stopPropagation(); moveCategoryInSidebar(category.id, 'up'); }}
+                                disabled={index === 0}
+                                className="p-0.5 text-slate-400 hover:text-blue-600 disabled:opacity-30"
+                                title="Move up"
+                              >
+                                <ArrowUp className="w-3 h-3" />
+                              </button>
+                              <button
+                                onClick={(e) => { e.stopPropagation(); moveCategoryInSidebar(category.id, 'down'); }}
+                                disabled={index === categories.length - 1}
+                                className="p-0.5 text-slate-400 hover:text-blue-600 disabled:opacity-30"
+                                title="Move down"
+                              >
+                                <ArrowDown className="w-3 h-3" />
+                              </button>
                             </div>
-                            <div className="flex items-center gap-2">
-                              <Badge variant="secondary" className="text-xs h-5">
-                                {filteredDiseases.length}
-                              </Badge>
-                              {isExpanded ? (
-                                <ChevronDown className="w-4 h-4 text-slate-400" />
-                              ) : (
-                                <ChevronRight className="w-4 h-4 text-slate-400" />
-                              )}
+                          )}
+                          <CollapsibleTrigger className="flex-1" data-testid={`category-${category.id}`}>
+                            <div className="sidebar-item justify-between group">
+                              <div className="flex items-center gap-3">
+                                <IconComponent iconName={category.icon} />
+                                <span className="text-sm truncate">{category.name}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Badge variant="secondary" className="text-xs h-5">
+                                  {filteredDiseases.length}
+                                </Badge>
+                                {isExpanded ? (
+                                  <ChevronDown className="w-4 h-4 text-slate-400" />
+                                ) : (
+                                  <ChevronRight className="w-4 h-4 text-slate-400" />
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        </CollapsibleTrigger>
+                          </CollapsibleTrigger>
+                        </div>
                         <CollapsibleContent>
                           <div className="ml-4 pl-4 border-l border-slate-200 dark:border-slate-700 space-y-0.5 mt-1">
                             {filteredDiseases.map((disease) => (
