@@ -442,6 +442,27 @@ async def delete_category(
     
     return {"message": "Category deleted"}
 
+class CategoryOrderUpdate(BaseModel):
+    category_ids: List[str]
+
+@api_router.put("/categories/reorder")
+async def reorder_categories(
+    order_update: CategoryOrderUpdate,
+    user: dict = Depends(get_current_user)
+):
+    """Update the order of categories (admin only)"""
+    if user["role"] != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Only admins can reorder categories")
+    
+    # Update order for each category
+    for index, cat_id in enumerate(order_update.category_ids):
+        await db.categories.update_one(
+            {"id": cat_id},
+            {"$set": {"order": index}}
+        )
+    
+    return {"message": "Categories reordered", "new_order": order_update.category_ids}
+
 # ==================== DISEASE ROUTES ====================
 
 @api_router.get("/diseases", response_model=List[DiseaseResponse])
