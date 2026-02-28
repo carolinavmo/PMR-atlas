@@ -1089,6 +1089,123 @@ async def root():
 async def health_check():
     return {"status": "healthy", "database": "connected"}
 
+# ==================== TRANSLATION ROUTES ====================
+
+class TranslationRequest(BaseModel):
+    text: str
+    source_language: str
+    target_language: str
+
+class TranslationResponse(BaseModel):
+    translated_text: str
+    source_language: str
+    target_language: str
+
+LANGUAGE_NAMES = {
+    'en': 'English',
+    'pt': 'Portuguese (Portugal)',
+    'es': 'Spanish'
+}
+
+@api_router.post("/translate", response_model=TranslationResponse)
+async def translate_text(
+    request: TranslationRequest,
+    user: dict = Depends(get_current_user)
+):
+    """Translate medical content between languages"""
+    if not EMERGENT_LLM_KEY:
+        raise HTTPException(status_code=500, detail="Translation service not configured")
+    
+    source_name = LANGUAGE_NAMES.get(request.source_language, request.source_language)
+    target_name = LANGUAGE_NAMES.get(request.target_language, request.target_language)
+    
+    try:
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=f"translate-{uuid.uuid4()}",
+            system_message=f"""You are a professional medical translator. Translate the following medical/clinical text from {source_name} to {target_name}. 
+            
+Rules:
+- Preserve all medical terminology accurately
+- Maintain the same formatting (bullet points, line breaks, etc.)
+- Keep any markdown formatting intact
+- Do not add explanations or notes
+- Only output the translated text, nothing else"""
+        ).with_model("openai", "gpt-4.1-mini")
+        
+        user_message = UserMessage(text=request.text)
+        translated = await chat.send_message(user_message)
+        
+        return TranslationResponse(
+            translated_text=translated,
+            source_language=request.source_language,
+            target_language=request.target_language
+        )
+    except Exception as e:
+        logger.error(f"Translation error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Translation failed: {str(e)}")
+
+@api_router.post("/translate-disease/{disease_id}")
+async def translate_disease(
+    disease_id: str,
+    target_language: str,
+    user: dict = Depends(get_current_user)
+):
+    """Translate all text fields of a disease to target language"""
+    if user["role"] not in [UserRole.ADMIN, UserRole.EDITOR]:
+        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    
+    disease = await db.diseases.find_one({"id": disease_id}, {"_id": 0})
+    if not disease:
+        raise HTTPException(status_code=404, detail="Disease not found")
+    
+    # Fields to translate
+    text_fields = [
+        'definition', 'epidemiology', 'pathophysiology', 'biomechanics',
+        'clinical_presentation', 'physical_examination', 'imaging_findings',
+        'differential_diagnosis', 'treatment_conservative', 'treatment_interventional',
+        'treatment_surgical', 'rehabilitation_protocol', 'prognosis'
+    ]
+    
+    source_lang = disease.get('language', 'en')
+    translations = {}
+    
+    try:
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=f"translate-disease-{uuid.uuid4()}",
+            system_message=f"""You are a professional medical translator. Translate medical/clinical text from {LANGUAGE_NAMES.get(source_lang, 'English')} to {LANGUAGE_NAMES.get(target_language, target_language)}. 
+            
+Rules:
+- Preserve all medical terminology accurately
+- Maintain the same formatting (bullet points, line breaks, etc.)
+- Keep any markdown formatting intact
+- Only output the translated text, nothing else"""
+        ).with_model("openai", "gpt-4.1-mini")
+        
+        for field in text_fields:
+            content = disease.get(field, '')
+            if content and content.strip():
+                user_message = UserMessage(text=content)
+                translated = await chat.send_message(user_message)
+                translations[f"{field}_{target_language}"] = translated
+        
+        # Also translate name
+        if disease.get('name'):
+            user_message = UserMessage(text=disease['name'])
+            translations[f"name_{target_language}"] = await chat.send_message(user_message)
+        
+        # Update disease with translations
+        await db.diseases.update_one(
+            {"id": disease_id},
+            {"$set": translations}
+        )
+        
+        return {"message": f"Translated to {target_language}", "fields_translated": len(translations)}
+    except Exception as e:
+        logger.error(f"Disease translation error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Translation failed: {str(e)}")
+
 # Include the router in the main app
 app.include_router(api_router)
 
