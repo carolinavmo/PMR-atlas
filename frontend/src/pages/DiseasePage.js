@@ -7,7 +7,7 @@ import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
 import { Separator } from '../components/ui/separator';
 import { RichTextEditor } from '../components/editor/RichTextEditor';
-import { MediaSection } from '../components/editor/MediaSection';
+import { SectionMedia } from '../components/editor/SectionMedia';
 import { toast } from 'sonner';
 import axios from 'axios';
 import { 
@@ -32,7 +32,6 @@ const sections = [
   { id: 'rehabilitation_protocol', label: 'Rehabilitation Protocol' },
   { id: 'prognosis', label: 'Prognosis' },
   { id: 'references', label: 'References' },
-  { id: 'media', label: 'Media & Images' },
 ];
 
 export const DiseasePage = () => {
