@@ -571,11 +571,11 @@ export const DiseasePage = () => {
                 <div 
                   key={section.id} 
                   ref={el => sectionRefs.current[section.id] = el}
-                  className="editable-section w-full"
+                  className="w-full mb-6"
                   data-testid={`section-${section.id}`}
                 >
-                  <div className="flex items-center justify-between group w-full">
-                    <h3 className="section-heading flex-grow" id={section.id} style={{width: '100%'}}>
+                  <div className="flex items-center justify-between group w-full mb-3 pb-2 border-b border-slate-200 dark:border-slate-700">
+                    <h3 className="text-base font-semibold text-slate-900 dark:text-white" id={section.id}>
                       {section.label}
                     </h3>
                     {isEditor && !isEditing && (
