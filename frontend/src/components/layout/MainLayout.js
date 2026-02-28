@@ -31,6 +31,12 @@ const categoryIcons = {
   'folder': FileText,
 };
 
+// Blue pastel theme colors
+const themeColors = {
+  primary: 'blue',
+  accent: 'blue',
+};
+
 export const MainLayout = ({ children }) => {
   const { user, logout, isAdmin, getAuthHeaders } = useAuth();
   const { isDark, toggleTheme } = useTheme();
@@ -111,7 +117,7 @@ export const MainLayout = ({ children }) => {
           <div className="h-16 px-4 flex items-center justify-between border-b border-slate-200 dark:border-slate-800">
             {sidebarOpen && (
               <Link to="/dashboard" className="flex items-center gap-2.5" data-testid="logo-link">
-                <div className="w-9 h-9 rounded-lg bg-sage-500 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-lg bg-blue-500 flex items-center justify-center">
                   <Activity className="w-5 h-5 text-white" />
                 </div>
                 <span className="font-heading font-bold text-lg">PMR Atlas</span>
@@ -211,7 +217,7 @@ export const MainLayout = ({ children }) => {
                                 to={`/disease/${disease.id}`}
                                 className={`block py-2 px-3 text-sm rounded-md transition-colors ${
                                   location.pathname === `/disease/${disease.id}`
-                                    ? 'bg-sage-100 dark:bg-sage-900/30 text-sage-700 dark:text-sage-400 font-medium'
+                                    ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-medium'
                                     : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
                                 }`}
                                 data-testid={`disease-link-${disease.id}`}
@@ -277,7 +283,7 @@ export const MainLayout = ({ children }) => {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-9 w-9 rounded-full" data-testid="user-menu">
                   <Avatar className="h-9 w-9">
-                    <AvatarFallback className="bg-sage-100 text-sage-700 font-medium">
+                    <AvatarFallback className="bg-blue-100 text-blue-700 font-medium">
                       {getInitials(user?.name)}
                     </AvatarFallback>
                   </Avatar>
