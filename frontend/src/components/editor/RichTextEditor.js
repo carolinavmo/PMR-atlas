@@ -10,33 +10,38 @@ export const RichTextEditor = ({
   readOnly = false 
 }) => {
   const editorRef = useRef(null);
-  const [isFocused, setIsFocused] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  // Convert plain text with markers to HTML for display
+  // Convert plain text with markdown markers to HTML for display
   const textToHtml = useCallback((text) => {
     if (!text) return '';
     
     let html = text
-      // Escape HTML first
+      // Escape HTML entities first
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      // Convert markdown-style markers to HTML
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.+?)\*/g, '<em>$1</em>')
-      .replace(/__(.+?)__/g, '<u>$1</u>')
-      // Convert line breaks
-      .replace(/\n/g, '<br>');
+      .replace(/>/g, '&gt;');
     
-    // Handle bullet points
-    const lines = html.split('<br>');
-    let inList = false;
+    // Convert markdown-style markers to HTML (order matters!)
+    // Bold: **text**
+    html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    // Italic: *text*
+    html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    // Underline: __text__
+    html = html.replace(/__(.+?)__/g, '<u>$1</u>');
+    
+    // Handle bullet points and line breaks
+    const lines = html.split('\n');
     let result = [];
+    let inList = false;
     
-    for (const line of lines) {
-      if (line.startsWith('- ') || line.startsWith('• ')) {
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const isBullet = line.startsWith('- ') || line.startsWith('• ');
+      
+      if (isBullet) {
         if (!inList) {
-          result.push('<ul>');
+          result.push('<ul class="list-disc pl-6 my-2">');
           inList = true;
         }
         result.push(`<li>${line.substring(2)}</li>`);
@@ -45,19 +50,25 @@ export const RichTextEditor = ({
           result.push('</ul>');
           inList = false;
         }
-        result.push(line || '<br>');
+        if (line.trim()) {
+          result.push(`<div>${line}</div>`);
+        } else {
+          result.push('<div><br></div>');
+        }
       }
     }
-    if (inList) result.push('</ul>');
+    
+    if (inList) {
+      result.push('</ul>');
+    }
     
     return result.join('');
   }, []);
 
-  // Convert HTML back to plain text with markers
+  // Convert HTML back to plain text with markdown markers
   const htmlToText = useCallback((html) => {
     if (!html) return '';
     
-    // Create temp element to parse HTML
     const temp = document.createElement('div');
     temp.innerHTML = html;
     
@@ -80,7 +91,7 @@ export const RichTextEditor = ({
           case 'u':
             return `__${children}__`;
           case 'li':
-            return `- ${children}`;
+            return `- ${children}\n`;
           case 'ul':
           case 'ol':
             return children;
@@ -88,7 +99,7 @@ export const RichTextEditor = ({
             return '\n';
           case 'div':
           case 'p':
-            return children + '\n';
+            return children + (children.endsWith('\n') ? '' : '\n');
           default:
             return children;
         }
@@ -97,31 +108,53 @@ export const RichTextEditor = ({
     };
     
     let text = Array.from(temp.childNodes).map(processNode).join('');
-    // Clean up multiple newlines
-    text = text.replace(/\n{3,}/g, '\n\n').trim();
+    // Clean up: remove trailing newlines and multiple consecutive newlines
+    text = text.replace(/\n{3,}/g, '\n\n').replace(/\n+$/, '');
     return text;
   }, []);
 
-  // Initialize editor content
+  // Initialize editor content only once
   useEffect(() => {
-    if (editorRef.current && !isFocused) {
-      const html = textToHtml(value);
-      if (editorRef.current.innerHTML !== html) {
-        editorRef.current.innerHTML = html || '';
+    if (editorRef.current && !isInitialized && value) {
+      editorRef.current.innerHTML = textToHtml(value);
+      setIsInitialized(true);
+    }
+  }, [value, textToHtml, isInitialized]);
+
+  // Reset initialization when value changes externally (e.g., language switch)
+  useEffect(() => {
+    if (editorRef.current && isInitialized) {
+      const currentText = htmlToText(editorRef.current.innerHTML);
+      if (currentText !== value) {
+        editorRef.current.innerHTML = textToHtml(value);
       }
     }
-  }, [value, textToHtml, isFocused]);
+  }, [value]);
 
-  const execCommand = (command, value = null) => {
+  const execCommand = (command, commandValue = null) => {
+    // Save selection
+    const selection = window.getSelection();
+    const range = selection?.rangeCount > 0 ? selection.getRangeAt(0) : null;
+    
+    // Focus and execute
     editorRef.current?.focus();
-    document.execCommand(command, false, value);
-    // Trigger change after command
+    
+    // Restore selection if we have one
+    if (range) {
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+    
+    // Execute the command
+    document.execCommand(command, false, commandValue);
+    
+    // Notify parent of change
     setTimeout(() => {
       if (editorRef.current && onChange) {
         const text = htmlToText(editorRef.current.innerHTML);
         onChange(text);
       }
-    }, 10);
+    }, 0);
   };
 
   const handleInput = () => {
@@ -132,18 +165,9 @@ export const RichTextEditor = ({
   };
 
   const handleKeyDown = (e) => {
-    // Handle tab key
     if (e.key === 'Tab') {
       e.preventDefault();
       document.execCommand('insertText', false, '    ');
-    }
-    // Handle enter in list
-    if (e.key === 'Enter' && !e.shiftKey) {
-      const selection = window.getSelection();
-      const node = selection?.anchorNode?.parentElement;
-      if (node?.tagName === 'LI') {
-        // Continue list behavior naturally
-      }
     }
   };
 
@@ -170,6 +194,7 @@ export const RichTextEditor = ({
           type="button"
           variant="ghost"
           size="sm"
+          onMouseDown={(e) => e.preventDefault()}
           onClick={() => execCommand('bold')}
           className="h-8 w-8 p-0 hover:bg-slate-200 dark:hover:bg-slate-700"
           title="Bold (Ctrl+B)"
@@ -180,6 +205,7 @@ export const RichTextEditor = ({
           type="button"
           variant="ghost"
           size="sm"
+          onMouseDown={(e) => e.preventDefault()}
           onClick={() => execCommand('italic')}
           className="h-8 w-8 p-0 hover:bg-slate-200 dark:hover:bg-slate-700"
           title="Italic (Ctrl+I)"
@@ -190,6 +216,7 @@ export const RichTextEditor = ({
           type="button"
           variant="ghost"
           size="sm"
+          onMouseDown={(e) => e.preventDefault()}
           onClick={() => execCommand('underline')}
           className="h-8 w-8 p-0 hover:bg-slate-200 dark:hover:bg-slate-700"
           title="Underline (Ctrl+U)"
@@ -203,6 +230,7 @@ export const RichTextEditor = ({
           type="button"
           variant="ghost"
           size="sm"
+          onMouseDown={(e) => e.preventDefault()}
           onClick={() => execCommand('insertUnorderedList')}
           className="h-8 w-8 p-0 hover:bg-slate-200 dark:hover:bg-slate-700"
           title="Bullet List"
@@ -213,6 +241,7 @@ export const RichTextEditor = ({
           type="button"
           variant="ghost"
           size="sm"
+          onMouseDown={(e) => e.preventDefault()}
           onClick={() => execCommand('insertOrderedList')}
           className="h-8 w-8 p-0 hover:bg-slate-200 dark:hover:bg-slate-700"
           title="Numbered List"
@@ -226,6 +255,7 @@ export const RichTextEditor = ({
           type="button"
           variant="ghost"
           size="sm"
+          onMouseDown={(e) => e.preventDefault()}
           onClick={() => execCommand('undo')}
           className="h-8 w-8 p-0 hover:bg-slate-200 dark:hover:bg-slate-700"
           title="Undo (Ctrl+Z)"
@@ -236,6 +266,7 @@ export const RichTextEditor = ({
           type="button"
           variant="ghost"
           size="sm"
+          onMouseDown={(e) => e.preventDefault()}
           onClick={() => execCommand('redo')}
           className="h-8 w-8 p-0 hover:bg-slate-200 dark:hover:bg-slate-700"
           title="Redo (Ctrl+Y)"
@@ -250,23 +281,37 @@ export const RichTextEditor = ({
         contentEditable
         className={`min-h-[120px] p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-b-lg 
                    focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400
-                   text-slate-700 dark:text-slate-300 leading-relaxed ${className}`}
+                   text-slate-700 dark:text-slate-300 leading-relaxed
+                   [&_strong]:font-bold [&_b]:font-bold
+                   [&_em]:italic [&_i]:italic
+                   [&_u]:underline
+                   [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:my-2
+                   [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:my-2
+                   [&_li]:my-1
+                   ${className}`}
         onInput={handleInput}
         onKeyDown={handleKeyDown}
         onPaste={handlePaste}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
         data-placeholder={placeholder}
         suppressContentEditableWarning
-        style={{ whiteSpace: 'pre-wrap' }}
       />
       
-      {/* Placeholder */}
+      {/* Placeholder style */}
       <style>{`
         [contenteditable]:empty:before {
           content: attr(data-placeholder);
           color: #9ca3af;
           pointer-events: none;
+          display: block;
+        }
+        [contenteditable] strong, [contenteditable] b {
+          font-weight: 700 !important;
+        }
+        [contenteditable] em, [contenteditable] i {
+          font-style: italic !important;
+        }
+        [contenteditable] u {
+          text-decoration: underline !important;
         }
       `}</style>
     </div>
