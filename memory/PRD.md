@@ -25,14 +25,15 @@
 - [x] Disease content auto-translation
 
 ### Inline Editing System (Complete - Feb 28, 2026)
-- [x] **Admin Inline Edit Mode** - Click "Edit" button to enter edit mode
-- [x] **Editable Title** - Disease name is editable inline
-- [x] **Editable Section Content** - All sections become textareas in edit mode
+- [x] **Per-Section Inline Editing** - Each section (Definition, Epidemiology, etc.) editable individually
+- [x] **Hover Edit Button** - Edit button appears on hover for admins only
 - [x] **"Save This Language Only"** - Saves changes to current language (EN/PT/ES) only
 - [x] **"Save + Translate All"** - Saves to current language AND auto-translates to other languages
 - [x] **Confirmation Dialog** - Warning before overwriting translations
+- [x] **"Last Edited" Indicator** - Shows who edited and when (visible to all users)
+- [x] **Translation Globe Icon** - Appears next to "Last Edited" for translated sections
 - [x] **Role-Based Access** - Only Admins see Edit button; Students see read-only content
-- [x] **Translation Metadata** - Tracks `last_edited_language`, `last_translation_source`, `last_translation_at`
+- [x] **Per-Section Edit Metadata** - Stored in `{section_id}_edit_meta` field with editor name, timestamp
 - [x] **API Endpoints** - `/api/diseases/{id}/inline-save` and `/api/diseases/{id}/inline-save-translate`
 
 ### Category Reordering (Complete)
