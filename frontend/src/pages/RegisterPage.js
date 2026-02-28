@@ -57,7 +57,7 @@ export const RegisterPage = () => {
         <div className="absolute inset-0 noise-overlay" />
         <div className="relative z-10 flex flex-col justify-center px-12 xl:px-20">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl bg-sage-500 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-xl bg-blue-500 flex items-center justify-center">
               <Activity className="w-7 h-7 text-white" />
             </div>
             <span className="text-2xl font-heading font-bold text-slate-900">PMR Atlas</span>
@@ -65,7 +65,7 @@ export const RegisterPage = () => {
           
           <h1 className="text-4xl xl:text-5xl font-heading font-bold text-slate-900 leading-tight mb-6">
             Start Your<br />
-            <span className="text-sage-600">Medical Education</span> Journey
+            <span className="text-blue-600">Medical Education</span> Journey
           </h1>
           
           <p className="text-lg text-slate-600 leading-relaxed max-w-md">
@@ -75,8 +75,8 @@ export const RegisterPage = () => {
           
           <div className="mt-12 space-y-4">
             <div className="flex items-center gap-3 text-slate-700">
-              <div className="w-8 h-8 rounded-lg bg-sage-100 flex items-center justify-center">
-                <Check className="w-4 h-4 text-sage-600" />
+              <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                <Check className="w-4 h-4 text-blue-600" />
               </div>
               <span>Comprehensive disease database</span>
             </div>
@@ -101,7 +101,7 @@ export const RegisterPage = () => {
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-            <div className="w-10 h-10 rounded-xl bg-sage-500 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center">
               <Activity className="w-6 h-6 text-white" />
             </div>
             <span className="text-xl font-heading font-bold">PMR Atlas</span>
@@ -175,8 +175,8 @@ export const RegisterPage = () => {
                   {password && (
                     <div className="space-y-1 mt-2">
                       {passwordRequirements.map((req, i) => (
-                        <div key={i} className={`flex items-center gap-2 text-xs ${req.met ? 'text-sage-600' : 'text-slate-400'}`}>
-                          <div className={`w-3 h-3 rounded-full border ${req.met ? 'bg-sage-500 border-sage-500' : 'border-slate-300'} flex items-center justify-center`}>
+                        <div key={i} className={`flex items-center gap-2 text-xs ${req.met ? 'text-blue-600' : 'text-slate-400'}`}>
+                          <div className={`w-3 h-3 rounded-full border ${req.met ? 'bg-blue-500 border-blue-500' : 'border-slate-300'} flex items-center justify-center`}>
                             {req.met && <Check className="w-2 h-2 text-white" />}
                           </div>
                           <span>{req.text}</span>
@@ -205,7 +205,7 @@ export const RegisterPage = () => {
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-sage-600 hover:bg-sage-700 text-white"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                   disabled={isLoading}
                   data-testid="register-submit"
                 >
@@ -217,7 +217,7 @@ export const RegisterPage = () => {
                 <span className="text-slate-500">Already have an account? </span>
                 <Link 
                   to="/login" 
-                  className="text-sage-600 hover:text-sage-700 font-medium"
+                  className="text-blue-600 hover:text-blue-700 font-medium"
                   data-testid="login-link"
                 >
                   Sign in
