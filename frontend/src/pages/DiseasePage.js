@@ -297,15 +297,6 @@ export const DiseasePage = () => {
     return disease?.name || '';
   };
 
-  const handleLanguageChange = (langCode) => {
-    setCurrentLanguage(langCode);
-  };
-
-  const handleTranslationComplete = async (langCode) => {
-    // Refresh disease data to get translations
-    await fetchDisease();
-  };
-
   const handleAddMoreText = (sectionId) => {
     const currentContent = getCurrentContent(sectionId);
     const newContent = currentContent ? `${currentContent}\n\n` : '';
