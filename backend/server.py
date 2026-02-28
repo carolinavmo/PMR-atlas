@@ -606,15 +606,23 @@ async def delete_disease(
 # ==================== INLINE EDITING ROUTES ====================
 
 class InlineSaveRequest(BaseModel):
-    """Request model for inline save"""
+    """Request model for inline save - single section"""
     language: str = "en"
-    fields: Dict[str, str]  # field_name -> content
+    section_id: str  # e.g., "definition", "epidemiology"
+    content: str  # The content to save
 
 class InlineSaveAndTranslateRequest(BaseModel):
-    """Request model for save and translate"""
+    """Request model for save and translate - single section"""
     source_language: str = "en"
-    fields: Dict[str, str]  # field_name -> content
+    section_id: str  # e.g., "definition", "epidemiology"
+    content: str  # The content to save
     target_languages: List[str] = ["pt", "es"]
+
+# Legacy support for bulk editing
+class InlineSaveBulkRequest(BaseModel):
+    """Request model for bulk inline save"""
+    language: str = "en"
+    fields: Dict[str, str]  # field_name -> content
 
 @api_router.put("/diseases/{disease_id}/inline-save")
 async def inline_save_single_language(
