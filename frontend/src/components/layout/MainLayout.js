@@ -287,7 +287,7 @@ export const MainLayout = ({ children }) => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 <div className="px-2 py-1.5 text-xs font-semibold text-slate-500">
-                  Select Language
+                  {t('selectLanguage')}
                 </div>
                 <DropdownMenuSeparator />
                 {languages.map((lang) => (
