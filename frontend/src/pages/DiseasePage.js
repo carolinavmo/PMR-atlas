@@ -520,36 +520,6 @@ export const DiseasePage = () => {
             <span>Last updated: {new Date(disease.updated_at).toLocaleDateString()}</span>
           </div>
         </div>
-
-        {/* Floating Table of Contents */}
-        <div className="hidden xl:block w-56 shrink-0">
-          <div className="toc-container">
-            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 shadow-sm">
-              <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-3">
-                On This Page
-              </h3>
-              <nav className="space-y-0.5">
-                {sections.map((section) => {
-                  const content = getCurrentContent(section.id);
-                  // Only show sections with content
-                  if (section.id !== 'media' && section.id !== 'references' && !content) return null;
-                  if (section.id === 'references' && Array.isArray(content) && content.length === 0) return null;
-                  if (section.id === 'media' && (!disease.images || disease.images.length === 0) && !isEditor) return null;
-                  
-                  return (
-                    <button
-                      key={section.id}
-                      onClick={() => scrollToSection(section.id)}
-                      className={`toc-link w-full text-left ${activeSection === section.id ? 'active' : ''}`}
-                    >
-                      {section.label}
-                    </button>
-                  );
-                })}
-              </nav>
-            </div>
-          </div>
-        </div>
       </div>
     </MainLayout>
   );
