@@ -268,7 +268,21 @@ export const MainLayout = ({ children }) => {
           </div>
 
           {/* Right Side Actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            {/* Language Toggle */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleLanguage}
+              className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400"
+              title={`Current: ${getCurrentLanguageInfo().name}. Click to switch.`}
+              data-testid="language-toggle"
+            >
+              <Globe className="w-4 h-4" />
+              <span className="text-base">{getCurrentLanguageInfo().flag}</span>
+              <span className="hidden sm:inline text-xs font-medium">{getCurrentLanguageInfo().code.toUpperCase()}</span>
+            </Button>
+
             {/* Theme Toggle */}
             <Button
               variant="ghost"
