@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import { MainLayout } from '../components/layout/MainLayout';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -8,12 +9,12 @@ import { Textarea } from '../components/ui/textarea';
 import { Separator } from '../components/ui/separator';
 import { RichTextEditor, AddTextBlock } from '../components/editor/RichTextEditor';
 import { SectionMedia } from '../components/editor/SectionMedia';
-import { LanguageSwitcher } from '../components/LanguageSwitcher';
+import { DiseaseSearch } from '../components/DiseaseSearch';
 import { toast } from 'sonner';
 import axios from 'axios';
 import { 
   Bookmark, BookmarkCheck, FileText, Edit, Pencil, Check, X,
-  ArrowLeft, Save, Clock, Type, Plus
+  ArrowLeft, Save, Clock, Type, Plus, Loader2
 } from 'lucide-react';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
