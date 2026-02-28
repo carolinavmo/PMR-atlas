@@ -17,7 +17,7 @@ Create a full-stack web application for a Medical Education Platform focused on 
 - **Backend:** FastAPI (Python)
 - **Database:** MongoDB
 - **Authentication:** JWT-based with role management
-- **Translation:** Google Translate API via emergentintegrations
+- **Translation:** Google Translate API via emergentintegrations (OpenAI GPT-4.1-mini)
 
 ## What's Been Implemented
 
@@ -32,12 +32,18 @@ Create a full-stack web application for a Medical Education Platform focused on 
 - [x] Admin panel with CRUD operations
 - [x] Version history for diseases
 
-### Recent Implementations (Feb 2025)
-- [x] **Rich Text Editor** - Full formatting toolbar (Bold, Italic, Underline, Bullet/Numbered lists, Undo/Redo)
+### Multilingual System (Complete - Feb 2025)
+- [x] **Site-wide Language Dropdown** - Dropdown selector in header showing 🇬🇧 EN / 🇧🇷 PT / 🇪🇸 ES
+- [x] **Clear Active Language Indicator** - Checkmark (✓) shows current language
+- [x] **Dynamic Content Re-rendering** - Content updates without page reload
+- [x] **Language Persistence** - Selected language persists during navigation (localStorage)
+- [x] **Auto-translation on Demand** - Diseases translated via LLM when switching languages
+- [x] **Translation Fields in API** - Backend returns translated fields (name_pt, definition_pt, etc.)
+
+### Recent Implementations
+- [x] **Rich Text Editor** - Full formatting toolbar (Bold, Italic, Underline, Bullet/Numbered lists)
 - [x] **"Add More Text" Button** - In each section to add more content
 - [x] **Media Upload** - Support for both URL and local file upload
-- [x] **Site-wide Language Toggle** - EN/PT/ES toggle in header
-- [x] **Auto-translate on Save** - Content automatically translated to all languages when saving
 - [x] **Disease Search Bar** - Quick switch search at top of disease page
 
 ## Architecture
@@ -45,7 +51,7 @@ Create a full-stack web application for a Medical Education Platform focused on 
 ```
 /app
 ├── backend/
-│   ├── server.py         # FastAPI with all endpoints
+│   ├── server.py         # FastAPI with all endpoints + translation
 │   └── .env              # MONGO_URL, JWT_SECRET, EMERGENT_LLM_KEY
 ├── frontend/
 │   ├── src/
@@ -54,15 +60,15 @@ Create a full-stack web application for a Medical Education Platform focused on 
 │   │   │   │   ├── RichTextEditor.js  # Rich text with markdown
 │   │   │   │   └── SectionMedia.js    # Media upload/display
 │   │   │   ├── layout/
-│   │   │   │   └── MainLayout.js      # Two-panel layout
+│   │   │   │   └── MainLayout.js      # Two-panel layout + language dropdown
 │   │   │   ├── DiseaseSearch.js       # Quick search component
-│   │   │   └── LanguageToggle.js      # Language switcher
+│   │   │   └── LanguageToggle.js      # Language switcher (legacy)
 │   │   ├── contexts/
 │   │   │   ├── AuthContext.js
 │   │   │   ├── ThemeContext.js
 │   │   │   └── LanguageContext.js     # Global language state
 │   │   └── pages/
-│   │       ├── DiseasePage.js         # Main disease view
+│   │       ├── DiseasePage.js         # Main disease view with translation
 │   │       ├── DashboardPage.js
 │   │       └── AdminPage.js
 │   └── tailwind.config.js
@@ -74,12 +80,11 @@ Create a full-stack web application for a Medical Education Platform focused on 
 - `POST /api/auth/login` - User login
 - `GET /api/categories` - List all categories
 - `GET /api/diseases` - List diseases (with search/filter)
-- `GET /api/diseases/{id}` - Get single disease
+- `GET /api/diseases/{id}` - Get single disease (includes translated fields)
 - `PUT /api/diseases/{id}` - Update disease (admin/editor)
-- `POST /api/translate-disease/{id}` - Auto-translate disease content
+- `POST /api/translate-disease/{id}` - Auto-translate disease content to target language
 - `GET /api/bookmarks` - User's bookmarks
 - `GET /api/notes` - User's notes
-- `GET /api/recent-views` - Recently viewed diseases
 
 ## Test Credentials
 - Admin: admin@pmr.edu / admin123
@@ -87,14 +92,15 @@ Create a full-stack web application for a Medical Education Platform focused on 
 ## Remaining/Future Tasks
 
 ### P1 (High Priority)
+- [ ] URL-based language prefix (/en/, /pt/, /es/) for SEO
 - [ ] Password reset functionality
 - [ ] Email verification
-- [ ] Numbered list support in editor display
 
 ### P2 (Medium Priority)
 - [ ] Refactor DiseasePage.js into smaller components
 - [ ] Add more PMR diseases to seed data
 - [ ] Image optimization for media uploads
+- [ ] Translate sidebar categories and UI labels
 
 ### P3 (Lower Priority)
 - [ ] Export disease as PDF
