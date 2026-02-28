@@ -246,12 +246,12 @@ export const MainLayout = ({ children }) => {
                           )}
                           <CollapsibleTrigger className="flex-1" data-testid={`category-${category.id}`}>
                             <div className="sidebar-item justify-between group">
-                              <div className="flex items-center gap-3">
+                              <div className="flex items-center gap-2 min-w-0 flex-1">
                                 <IconComponent iconName={category.icon} />
                                 <span className="text-sm truncate">{category.name}</span>
                               </div>
-                              <div className="flex items-center gap-2">
-                                <Badge variant="secondary" className="text-xs h-5">
+                              <div className="flex items-center gap-1 flex-shrink-0">
+                                <Badge variant="secondary" className="text-xs h-5 min-w-[24px] justify-center">
                                   {filteredDiseases.length}
                                 </Badge>
                                 {isExpanded ? (
