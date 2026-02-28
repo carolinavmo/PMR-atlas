@@ -1,34 +1,172 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+/* PMR Education Platform - Custom Styles */
+
+/* Noise texture overlay for backgrounds */
+.noise-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+/* Sidebar transitions */
+.sidebar-transition {
+  transition: width 0.3s ease, transform 0.3s ease;
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+/* Content fade animation */
+.content-enter {
+  animation: contentFadeIn 0.4s ease-out;
 }
 
-.App-link {
-    color: #61dafb;
+@keyframes contentFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+/* Card hover effect */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Focus ring styling */
+.focus-ring:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--ring));
+}
+
+/* Medical content typography */
+.disease-content h3 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  font-size: 1.125rem;
+  color: hsl(var(--foreground));
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.disease-content p {
+  line-height: 1.75;
+  color: hsl(var(--muted-foreground));
+  white-space: pre-line;
+}
+
+.disease-content ul, .disease-content ol {
+  margin-left: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.disease-content li {
+  line-height: 1.75;
+  color: hsl(var(--muted-foreground));
+  margin-bottom: 0.25rem;
+}
+
+/* Table of contents highlight */
+.toc-item {
+  position: relative;
+  padding-left: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.toc-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: transparent;
+  border-radius: 1px;
+  transition: background 0.2s ease;
+}
+
+.toc-item:hover::before,
+.toc-item.active::before {
+  background: hsl(var(--primary));
+}
+
+.toc-item:hover,
+.toc-item.active {
+  color: hsl(var(--primary));
+}
+
+/* Loading skeleton animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--muted)) 25%,
+    hsl(var(--muted-foreground) / 0.1) 50%,
+    hsl(var(--muted)) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Custom scrollbar for main content */
+.main-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.main-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.2);
+  border-radius: 4px;
+}
+
+.main-content::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.3);
+}
+
+/* Dark mode specific adjustments */
+.dark .card-hover:hover {
+  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
+/* Collapsible category animation */
+.category-collapse-content {
+  overflow: hidden;
+  transition: height 0.3s ease;
+}
+
+/* Button press effect */
+.btn-press:active {
+  transform: scale(0.98);
+}
+
+/* Auth page background pattern */
+.auth-pattern {
+  background-color: hsl(var(--sidebar-bg));
+  background-image: 
+    radial-gradient(at 40% 20%, hsl(152 69% 40% / 0.1) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, hsl(262 83% 76% / 0.1) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, hsl(152 69% 40% / 0.08) 0px, transparent 50%);
 }
