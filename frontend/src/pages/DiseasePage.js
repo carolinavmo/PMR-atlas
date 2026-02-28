@@ -505,7 +505,7 @@ export const DiseasePage = () => {
                   ) : (
                     <Bookmark className="w-4 h-4 mr-1" />
                   )}
-                  {isBookmarked ? 'Saved' : 'Save'}
+                  {t('save')}
                 </Button>
                 <Button
                   variant="outline"
@@ -514,7 +514,7 @@ export const DiseasePage = () => {
                   data-testid="notes-toggle"
                 >
                   <FileText className="w-4 h-4 mr-1" />
-                  Notes
+                  {t('notes')}
                 </Button>
               </div>
             </div>
@@ -533,11 +533,11 @@ export const DiseasePage = () => {
             {/* Save Changes Bar */}
             {hasChanges && isEditor && (
               <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg mb-4">
-                <span className="text-sm text-blue-700 dark:text-blue-300">You have unsaved changes</span>
+                <span className="text-sm text-blue-700 dark:text-blue-300">{t('youHaveUnsavedChanges')}</span>
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm" onClick={discardChanges} disabled={saving || translating}>
                     <X className="w-4 h-4 mr-1" />
-                    Discard
+                    {t('discard')}
                   </Button>
                   <Button 
                     size="sm" 
@@ -547,7 +547,7 @@ export const DiseasePage = () => {
                   >
                     {(saving || translating) && <Loader2 className="w-4 h-4 mr-1 animate-spin" />}
                     {!saving && !translating && <Save className="w-4 h-4 mr-1" />}
-                    {saving ? 'Saving...' : translating ? 'Translating...' : 'Save & Translate'}
+                    {saving ? t('saving') : translating ? t('translating') : t('saveAndTranslate')}
                   </Button>
                 </div>
               </div>
@@ -557,7 +557,7 @@ export const DiseasePage = () => {
           {/* Notes Panel */}
           {showNotes && (
             <div className="mb-8 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700" data-testid="notes-panel">
-              <h3 className="text-lg font-heading font-semibold mb-3">Personal Notes</h3>
+              <h3 className="text-lg font-heading font-semibold mb-3">{t('yourNotesForThisDisease')}</h3>
               <Textarea
                 placeholder="Write your notes about this disease..."
                 value={note}
