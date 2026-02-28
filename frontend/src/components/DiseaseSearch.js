@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../contexts/LanguageContext';
 import { Input } from './ui/input';
 import { Search, X } from 'lucide-react';
 import axios from 'axios';
@@ -7,6 +8,7 @@ import axios from 'axios';
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export const DiseaseSearch = ({ currentDiseaseId }) => {
+  const { t } = useLanguage();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
