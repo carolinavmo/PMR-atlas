@@ -559,7 +559,7 @@ export const DiseasePage = () => {
             <div className="mb-8 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700" data-testid="notes-panel">
               <h3 className="text-lg font-heading font-semibold mb-3">{t('yourNotesForThisDisease')}</h3>
               <Textarea
-                placeholder="Write your notes about this disease..."
+                placeholder={t('writeYourNotesHere')}
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 className="min-h-[120px] mb-3 bg-white dark:bg-slate-900"
@@ -571,7 +571,7 @@ export const DiseasePage = () => {
                 className="bg-blue-600 hover:bg-blue-700"
                 data-testid="save-notes-btn"
               >
-                {savingNote ? 'Saving...' : 'Save Notes'}
+                {savingNote ? t('saving') : t('saveNote')}
               </Button>
             </div>
           )}
@@ -606,7 +606,7 @@ export const DiseasePage = () => {
                         onClick={() => setEditingSection(section.id)}
                       >
                         <Pencil className="w-4 h-4 mr-1" />
-                        Edit
+                        {t('edit')}
                       </Button>
                     )}
                   </div>
