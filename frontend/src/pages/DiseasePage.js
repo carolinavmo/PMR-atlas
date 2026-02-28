@@ -302,6 +302,22 @@ export const DiseasePage = () => {
     setHasChanges(true);
   };
 
+  // Convert markdown text to JSX with formatting
+  const parseFormattedText = (text) => {
+    if (!text) return text;
+    
+    // Process the text to convert markdown markers to HTML
+    let html = text
+      // Bold: **text**
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      // Italic: *text*
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      // Underline: __text__
+      .replace(/__(.+?)__/g, '<u>$1</u>');
+    
+    return <span dangerouslySetInnerHTML={{ __html: html }} />;
+  };
+
   const renderSectionContent = (sectionId, content) => {
     if (!content) return <p className="text-slate-400 italic">No information available</p>;
     
@@ -311,7 +327,7 @@ export const DiseasePage = () => {
       return (
         <ol className="list-decimal list-inside space-y-2">
           {content.map((item, i) => (
-            <li key={i} className="text-slate-600 dark:text-slate-400">{item}</li>
+            <li key={i} className="text-slate-600 dark:text-slate-400">{parseFormattedText(item)}</li>
           ))}
         </ol>
       );
@@ -327,13 +343,13 @@ export const DiseasePage = () => {
             return (
               <div key={i} className="flex gap-2 mb-1">
                 <span className="text-blue-500 mt-0.5">•</span>
-                <span>{line.substring(2)}</span>
+                <span>{parseFormattedText(line.substring(2))}</span>
               </div>
             );
           }
           return (
             <p key={i} className="mb-2">
-              {line}
+              {parseFormattedText(line)}
             </p>
           );
         })}
