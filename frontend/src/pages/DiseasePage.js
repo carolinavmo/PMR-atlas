@@ -824,17 +824,70 @@ export const DiseasePage = () => {
                     </div>
                   ) : (
                     // View Mode
-                    <div className="mb-4 clearfix w-full">
-                      {/* Media */}
+                    <div className="mb-4 w-full">
+                      {/* Before text media */}
                       <SectionMedia
-                        media={sectionMedia}
+                        media={sectionMedia.filter(m => m.alignment === 'before')}
+                        onChange={() => {}}
+                        readOnly={true}
+                        position="before"
+                      />
+                      
+                      {/* Content with floated media */}
+                      <div className="clearfix">
+                        {/* Left-floated media */}
+                        {sectionMedia.filter(m => m.alignment === 'left').map((item, idx) => (
+                          <div key={`left-${idx}`} className="float-left mr-4 mb-2" style={{ width: `${item.size || 50}%` }}>
+                            <img 
+                              src={item.url} 
+                              alt={item.description || 'Section image'} 
+                              className="w-full rounded-lg object-cover"
+                            />
+                            {item.description && (
+                              <p className="text-sm text-slate-500 dark:text-slate-400 text-center mt-2 italic">
+                                {item.description}
+                              </p>
+                            )}
+                          </div>
+                        ))}
+                        
+                        {/* Right-floated media */}
+                        {sectionMedia.filter(m => m.alignment === 'right').map((item, idx) => (
+                          <div key={`right-${idx}`} className="float-right ml-4 mb-2" style={{ width: `${item.size || 50}%` }}>
+                            <img 
+                              src={item.url} 
+                              alt={item.description || 'Section image'} 
+                              className="w-full rounded-lg object-cover"
+                            />
+                            {item.description && (
+                              <p className="text-sm text-slate-500 dark:text-slate-400 text-center mt-2 italic">
+                                {item.description}
+                              </p>
+                            )}
+                          </div>
+                        ))}
+                        
+                        {/* Text content */}
+                        <div className="w-full">
+                          {renderSectionContent(section.id, content)}
+                        </div>
+                      </div>
+                      
+                      {/* Center media */}
+                      <SectionMedia
+                        media={sectionMedia.filter(m => m.alignment === 'center' || !m.alignment)}
                         onChange={() => {}}
                         readOnly={true}
                         position="inline"
                       />
-                      <div className="w-full">
-                        {renderSectionContent(section.id, content)}
-                      </div>
+                      
+                      {/* After text media */}
+                      <SectionMedia
+                        media={sectionMedia.filter(m => m.alignment === 'after')}
+                        onChange={() => {}}
+                        readOnly={true}
+                        position="after"
+                      />
                     </div>
                   )}
                 </div>
