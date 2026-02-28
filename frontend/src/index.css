@@ -204,23 +204,27 @@
 
   /* Compact content styles */
   .section-heading {
-    @apply text-lg font-semibold text-slate-900 dark:text-white mb-3 pb-2 border-b border-slate-200 dark:border-slate-700;
+    @apply text-lg font-semibold text-slate-900 dark:text-white mb-3 pb-2 border-b border-slate-200 dark:border-slate-700 w-full;
   }
   
   .section-content {
-    @apply text-sm leading-relaxed text-slate-600 dark:text-slate-400;
+    @apply text-sm leading-relaxed text-slate-600 dark:text-slate-400 w-full;
   }
   
   .section-content p {
-    @apply mb-1.5;
+    @apply mb-1.5 w-full;
   }
   
   .disease-content {
-    @apply text-sm;
+    @apply text-sm w-full;
   }
   
   .disease-content .section-heading {
-    @apply text-base font-semibold mt-6 first:mt-0;
+    @apply text-base font-semibold mt-6 first:mt-0 w-full;
+  }
+  
+  .editable-section {
+    @apply w-full;
   }
 }
 
