@@ -448,8 +448,8 @@ export const DiseasePage = () => {
   return (
     <MainLayout>
       <div className="relative" data-testid="disease-page" ref={contentRef}>
-        {/* Floating Table of Contents - Fixed Position - Narrower */}
-        <div className="hidden xl:block fixed right-6 top-24 w-48 z-20">
+        {/* Floating Table of Contents - Fixed Position */}
+        <div className="hidden xl:block fixed right-4 top-24 w-44 z-20">
           <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-3 shadow-lg max-h-[calc(100vh-120px)] overflow-auto scrollbar-thin">
             <h3 className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-2 px-2">
               {t('onThisPage')}
@@ -477,7 +477,7 @@ export const DiseasePage = () => {
         </div>
 
         {/* Main Content - Full width until TOC */}
-        <div className="xl:mr-52">
+        <div className="xl:mr-48">
           {/* Back Button and Disease Search */}
           <div className="flex items-center justify-between gap-4 mb-4">
             <Link to="/dashboard" className="inline-flex items-center text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
