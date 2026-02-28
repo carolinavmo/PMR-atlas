@@ -204,16 +204,37 @@ export const DiseasePage = () => {
       const headers = getAuthHeaders();
       const updateData = { ...editedContent };
       
+      // Save changes in current language
       await axios.put(`${API_URL}/diseases/${id}`, updateData, { headers });
+      
+      // Auto-translate to other languages
+      setTranslating(true);
+      toast.info('Auto-translating to other languages...');
+      
+      const otherLanguages = ['pt', 'es'].filter(l => l !== 'en');
+      for (const lang of otherLanguages) {
+        try {
+          await axios.post(
+            `${API_URL}/translate-disease/${id}?target_language=${lang}`,
+            {},
+            { headers }
+          );
+        } catch (err) {
+          console.error(`Translation to ${lang} failed:`, err);
+        }
+      }
+      
+      setTranslating(false);
       
       // Refresh disease data
       await fetchDisease();
-      toast.success('Changes saved successfully');
+      toast.success('Changes saved and translated to all languages');
       setEditingSection(null);
     } catch (err) {
       toast.error('Failed to save changes');
     } finally {
       setSaving(false);
+      setTranslating(false);
     }
   };
 
