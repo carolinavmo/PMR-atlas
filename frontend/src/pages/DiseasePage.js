@@ -448,13 +448,13 @@ export const DiseasePage = () => {
   return (
     <MainLayout>
       <div className="relative" data-testid="disease-page" ref={contentRef}>
-        {/* Floating Table of Contents - Fixed Position */}
-        <div className="hidden xl:block fixed right-8 top-24 w-56 z-20">
-          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 shadow-lg max-h-[calc(100vh-120px)] overflow-auto scrollbar-thin">
-            <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-3">
+        {/* Floating Table of Contents - Fixed Position - Narrower */}
+        <div className="hidden xl:block fixed right-6 top-24 w-48 z-20">
+          <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-3 shadow-lg max-h-[calc(100vh-120px)] overflow-auto scrollbar-thin">
+            <h3 className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-2 px-2">
               {t('onThisPage')}
             </h3>
-            <nav className="space-y-0.5">
+            <nav className="space-y-0">
               {sections.map((section) => {
                 const content = getCurrentContent(section.id);
                 const sectionMedia = getSectionMedia(section.id);
@@ -466,7 +466,7 @@ export const DiseasePage = () => {
                   <button
                     key={section.id}
                     onClick={() => scrollToSection(section.id)}
-                    className={`toc-link w-full text-left ${activeSection === section.id ? 'active' : ''}`}
+                    className={`toc-link w-full text-left text-xs py-1.5 ${activeSection === section.id ? 'active' : ''}`}
                   >
                     {section.label}
                   </button>
@@ -476,8 +476,8 @@ export const DiseasePage = () => {
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="max-w-3xl xl:mr-72">
+        {/* Main Content - Wider area */}
+        <div className="max-w-4xl xl:mr-56">
           {/* Back Button and Disease Search */}
           <div className="flex items-center justify-between gap-4 mb-4">
             <Link to="/dashboard" className="inline-flex items-center text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
