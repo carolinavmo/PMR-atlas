@@ -246,13 +246,52 @@ export const DiseasePage = () => {
   };
 
   const getCurrentContent = (sectionId) => {
+    // Check edited content first
     if (editedContent.hasOwnProperty(sectionId)) {
       return editedContent[sectionId];
     }
+    
+    // For non-English, check for translated content
+    if (currentLanguage !== 'en') {
+      const translatedKey = `${sectionId}_${currentLanguage}`;
+      if (disease?.[translatedKey]) {
+        return disease[translatedKey];
+      }
+    }
+    
+    // Default to original content
     if (sectionId === 'references') {
       return disease?.references || [];
     }
     return disease?.[sectionId] || '';
+  };
+
+  const getDiseaseName = () => {
+    if (currentLanguage !== 'en') {
+      const translatedName = disease?.[`name_${currentLanguage}`];
+      if (translatedName) return translatedName;
+    }
+    return disease?.name || '';
+  };
+
+  const handleLanguageChange = (langCode) => {
+    setCurrentLanguage(langCode);
+  };
+
+  const handleTranslationComplete = async (langCode) => {
+    // Refresh disease data to get translations
+    await fetchDisease();
+  };
+
+  const handleAddMoreText = (sectionId) => {
+    const currentContent = getCurrentContent(sectionId);
+    const newContent = currentContent ? `${currentContent}\n\n` : '';
+    setEditedContent(prev => ({
+      ...prev,
+      [sectionId]: newContent
+    }));
+    setEditingSection(sectionId);
+    setHasChanges(true);
   };
 
   const renderSectionContent = (sectionId, content) => {
