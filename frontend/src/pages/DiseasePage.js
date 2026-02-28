@@ -68,6 +68,10 @@ export const DiseasePage = () => {
   const [saving, setSaving] = useState(false);
   const [translating, setTranslating] = useState(false);
   const [showTranslateConfirm, setShowTranslateConfirm] = useState(false);
+  
+  // Per-section media editing state
+  const [editingMediaSection, setEditingMediaSection] = useState(null); // Which section's media is being edited
+  const [savingMedia, setSavingMedia] = useState(false);
 
   const contentRef = useRef(null);
   const sectionRefs = useRef({});
