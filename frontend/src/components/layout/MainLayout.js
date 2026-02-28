@@ -272,33 +272,28 @@ export const MainLayout = ({ children }) => {
               </div>
 
               <ScrollArea className="flex-1 px-2">
-                <div className="space-y-1 pb-4">
+                <div className="space-y-0.5 pb-4">
                   {categories.map((category, index) => {
                     const filteredDiseases = getFilteredDiseases(category.id);
                     const isExpanded = expandedCategories[category.id];
+                    const isDragging = draggedCategory === category.id;
+                    const isDropTarget = dropTargetId === category.id;
                     
                     return (
                       <Collapsible key={category.id} open={isExpanded} onOpenChange={() => toggleCategory(category.id)}>
-                        <div className="flex items-center group">
-                          {/* Admin reorder buttons */}
+                        <div 
+                          className={`flex items-center group ${isAdmin ? 'category-draggable' : ''} ${isDragging ? 'dragging opacity-50' : ''} ${isDropTarget ? 'border-t-2 border-blue-500' : ''}`}
+                          draggable={isAdmin}
+                          onDragStart={(e) => handleDragStart(e, category.id)}
+                          onDragOver={(e) => handleDragOver(e, category.id)}
+                          onDragLeave={handleDragLeave}
+                          onDrop={(e) => handleDrop(e, category.id)}
+                          onDragEnd={handleDragEnd}
+                        >
+                          {/* Drag handle for admin */}
                           {isAdmin && (
-                            <div className="flex flex-col mr-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <button
-                                onClick={(e) => { e.stopPropagation(); moveCategoryInSidebar(category.id, 'up'); }}
-                                disabled={index === 0}
-                                className="p-0.5 text-slate-400 hover:text-blue-600 disabled:opacity-30"
-                                title="Move up"
-                              >
-                                <ArrowUp className="w-3 h-3" />
-                              </button>
-                              <button
-                                onClick={(e) => { e.stopPropagation(); moveCategoryInSidebar(category.id, 'down'); }}
-                                disabled={index === categories.length - 1}
-                                className="p-0.5 text-slate-400 hover:text-blue-600 disabled:opacity-30"
-                                title="Move down"
-                              >
-                                <ArrowDown className="w-3 h-3" />
-                              </button>
+                            <div className="mr-1 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab">
+                              <GripVertical className="w-3 h-3 text-slate-400" />
                             </div>
                           )}
                           <CollapsibleTrigger className="flex-1" data-testid={`category-${category.id}`}>
@@ -323,7 +318,7 @@ export const MainLayout = ({ children }) => {
                               <Link
                                 key={disease.id}
                                 to={`/disease/${disease.id}`}
-                                className={`block py-2 px-3 text-sm rounded-md transition-colors ${
+                                className={`block py-1.5 px-3 text-sm rounded-md transition-colors ${
                                   location.pathname === `/disease/${disease.id}`
                                     ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 font-medium'
                                     : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
