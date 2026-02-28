@@ -239,6 +239,34 @@ export const SectionMedia = ({
       
       {position === 'inline' && inlineMedia.map((item, i) => renderMediaItem(item, media.indexOf(item)))}
       
+      {/* Position 'all' - shows all media for editing mode */}
+      {position === 'all' && (
+        <>
+          {media.length > 0 && (
+            <div className="space-y-4 mb-4">
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                Existing media ({media.length} item{media.length !== 1 ? 's' : ''}):
+              </p>
+              {media.map((item, i) => renderMediaItem(item, i))}
+            </div>
+          )}
+          
+          {/* Add Media Button */}
+          {!readOnly && (
+            <button
+              type="button"
+              onClick={() => setShowAddDialog(true)}
+              className="w-full py-3 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg 
+                         flex items-center justify-center gap-2 text-slate-400 hover:text-blue-500 
+                         hover:border-blue-400 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              <span className="text-sm">Add media to this section</span>
+            </button>
+          )}
+        </>
+      )}
+      
       {position === 'after' && (
         <>
           {afterMedia.map((item, i) => renderMediaItem(item, media.indexOf(item)))}
