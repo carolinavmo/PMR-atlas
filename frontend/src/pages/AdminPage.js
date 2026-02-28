@@ -359,7 +359,10 @@ export const AdminPage = () => {
           <TabsContent value="categories">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Categories Management</CardTitle>
+                <div>
+                  <CardTitle>{t('categoriesManagement')}</CardTitle>
+                  <p className="text-sm text-slate-500 mt-1">{t('dragToReorder')}</p>
+                </div>
                 <Dialog open={showCategoryDialog} onOpenChange={setShowCategoryDialog}>
                   <DialogTrigger asChild>
                     <Button 
@@ -371,7 +374,7 @@ export const AdminPage = () => {
                       data-testid="add-category-btn"
                     >
                       <Plus className="w-4 h-4 mr-2" />
-                      Add Category
+                      {t('addNewCategory')}
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
@@ -438,7 +441,7 @@ export const AdminPage = () => {
                       </div>
                     </div>
                     <DialogFooter>
-                      <Button variant="outline" onClick={() => setShowCategoryDialog(false)}>Cancel</Button>
+                      <Button variant="outline" onClick={() => setShowCategoryDialog(false)}>{t('cancel')}</Button>
                       <Button onClick={saveCategory} className="bg-blue-600 hover:bg-blue-700" data-testid="save-category-btn">
                         {editingCategory ? 'Update' : 'Create'}
                       </Button>
@@ -450,22 +453,46 @@ export const AdminPage = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
+                      <TableHead className="w-[100px]">Order</TableHead>
                       <TableHead>Name</TableHead>
                       <TableHead>Description</TableHead>
                       <TableHead>Diseases</TableHead>
-                      <TableHead>Order</TableHead>
                       <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {categories.map((category) => (
+                    {categories.map((category, index) => (
                       <TableRow key={category.id} data-testid={`category-row-${category.id}`}>
+                        <TableCell>
+                          <div className="flex items-center gap-1">
+                            <Button 
+                              variant="ghost" 
+                              size="icon"
+                              className="h-7 w-7"
+                              onClick={() => moveCategory(category.id, 'up')}
+                              disabled={index === 0}
+                              data-testid={`move-up-${category.id}`}
+                            >
+                              <ArrowUp className="w-4 h-4" />
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="icon"
+                              className="h-7 w-7"
+                              onClick={() => moveCategory(category.id, 'down')}
+                              disabled={index === categories.length - 1}
+                              data-testid={`move-down-${category.id}`}
+                            >
+                              <ArrowDown className="w-4 h-4" />
+                            </Button>
+                            <span className="text-sm text-slate-500 ml-1">{index + 1}</span>
+                          </div>
+                        </TableCell>
                         <TableCell className="font-medium">{category.name}</TableCell>
                         <TableCell className="max-w-xs truncate">{category.description}</TableCell>
                         <TableCell>
                           <Badge variant="secondary">{category.disease_count}</Badge>
                         </TableCell>
-                        <TableCell>{category.order}</TableCell>
                         <TableCell>
                           <div className="flex gap-2">
                             <Button 
