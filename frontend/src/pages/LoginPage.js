@@ -38,7 +38,7 @@ export const LoginPage = () => {
         <div className="absolute inset-0 noise-overlay" />
         <div className="relative z-10 flex flex-col justify-center px-12 xl:px-20">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl bg-sage-500 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-xl bg-blue-500 flex items-center justify-center">
               <Activity className="w-7 h-7 text-white" />
             </div>
             <span className="text-2xl font-heading font-bold text-slate-900">PMR Atlas</span>
@@ -46,7 +46,7 @@ export const LoginPage = () => {
           
           <h1 className="text-4xl xl:text-5xl font-heading font-bold text-slate-900 leading-tight mb-6">
             Physical Medicine &<br />
-            <span className="text-sage-600">Rehabilitation</span> Education
+            <span className="text-blue-600">Rehabilitation</span> Education
           </h1>
           
           <p className="text-lg text-slate-600 leading-relaxed max-w-md">
@@ -57,7 +57,7 @@ export const LoginPage = () => {
           
           <div className="mt-12 flex items-center gap-8 text-sm text-slate-500">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-sage-500" />
+              <div className="w-2 h-2 rounded-full bg-blue-500" />
               <span>8+ Categories</span>
             </div>
             <div className="flex items-center gap-2">
@@ -77,7 +77,7 @@ export const LoginPage = () => {
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-            <div className="w-10 h-10 rounded-xl bg-sage-500 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center">
               <Activity className="w-6 h-6 text-white" />
             </div>
             <span className="text-xl font-heading font-bold">PMR Atlas</span>
@@ -135,7 +135,7 @@ export const LoginPage = () => {
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-sage-600 hover:bg-sage-700 text-white"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                   disabled={isLoading}
                   data-testid="login-submit"
                 >
@@ -147,7 +147,7 @@ export const LoginPage = () => {
                 <span className="text-slate-500">Don't have an account? </span>
                 <Link 
                   to="/register" 
-                  className="text-sage-600 hover:text-sage-700 font-medium"
+                  className="text-blue-600 hover:text-blue-700 font-medium"
                   data-testid="register-link"
                 >
                   Create one
