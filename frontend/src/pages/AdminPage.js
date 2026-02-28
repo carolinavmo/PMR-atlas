@@ -200,10 +200,10 @@ export const AdminPage = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-heading font-bold text-slate-900 dark:text-white">
-              Admin Panel
+              {t('adminPanel')}
             </h1>
             <p className="text-slate-500 dark:text-slate-400">
-              Manage content and users
+              {t('manageContent')}
             </p>
           </div>
           <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
