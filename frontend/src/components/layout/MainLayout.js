@@ -343,19 +343,19 @@ export const MainLayout = ({ children }) => {
                 <DropdownMenuItem asChild>
                   <Link to="/dashboard" className="cursor-pointer">
                     <Home className="w-4 h-4 mr-2" />
-                    Dashboard
+                    {t('dashboard')}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/bookmarks" className="cursor-pointer">
                     <Bookmark className="w-4 h-4 mr-2" />
-                    Bookmarks
+                    {t('bookmarks')}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/notes" className="cursor-pointer">
                     <FileText className="w-4 h-4 mr-2" />
-                    My Notes
+                    {t('myNotes')}
                   </Link>
                 </DropdownMenuItem>
                 {isAdmin && (
@@ -364,7 +364,7 @@ export const MainLayout = ({ children }) => {
                     <DropdownMenuItem asChild>
                       <Link to="/admin" className="cursor-pointer">
                         <Shield className="w-4 h-4 mr-2" />
-                        Admin Panel
+                        {t('adminPanel')}
                       </Link>
                     </DropdownMenuItem>
                   </>
@@ -372,7 +372,7 @@ export const MainLayout = ({ children }) => {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={logout} className="text-red-600 cursor-pointer" data-testid="logout-btn">
                   <LogOut className="w-4 h-4 mr-2" />
-                  Log out
+                  {t('logout')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
