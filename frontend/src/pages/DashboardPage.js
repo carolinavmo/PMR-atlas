@@ -80,9 +80,9 @@ export const DashboardPage = () => {
     <MainLayout>
       <div className="space-y-8 animate-fade-in" data-testid="dashboard">
         {/* Welcome Section */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-sage-50 to-sage-100 dark:from-sage-900/20 dark:to-slate-900 p-6 lg:p-8 border border-sage-200 dark:border-sage-800">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-slate-900 p-6 lg:p-8 border border-blue-200 dark:border-blue-800">
           <div className="relative z-10">
-            <div className="flex items-center gap-2 text-sage-600 dark:text-sage-400 mb-2">
+            <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 mb-2">
               <Sparkles className="w-5 h-5" />
               <span className="text-sm font-medium">{getTimeGreeting()}</span>
             </div>
@@ -94,7 +94,7 @@ export const DashboardPage = () => {
             </p>
             <div className="mt-4">
               <Link to="/search?q=">
-                <Button className="bg-sage-600 hover:bg-sage-700 text-white" data-testid="explore-btn">
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white" data-testid="explore-btn">
                   <Search className="w-4 h-4 mr-2" />
                   Explore Diseases
                 </Button>
@@ -103,7 +103,7 @@ export const DashboardPage = () => {
           </div>
           <div className="absolute right-0 top-0 w-64 h-64 opacity-10">
             <svg viewBox="0 0 200 200" className="w-full h-full">
-              <path fill="currentColor" className="text-sage-500" d="M40.5,-62.9C51.9,-54.7,60.1,-42.1,66.1,-28.3C72.1,-14.6,75.9,0.3,73.8,14.7C71.7,29,63.7,42.8,52.2,53.3C40.7,63.8,25.7,71,9.2,74.3C-7.2,77.5,-25.1,76.7,-39.8,69.4C-54.6,62.1,-66.2,48.3,-73.1,32.6C-80,16.9,-82.2,-0.7,-77.7,-16.4C-73.2,-32.1,-62,-45.8,-48.5,-53.5C-35,-61.2,-19.2,-62.8,-2.5,-59.5C14.3,-56.2,29.1,-71.1,40.5,-62.9Z" transform="translate(100 100)" />
+              <path fill="currentColor" className="text-blue-500" d="M40.5,-62.9C51.9,-54.7,60.1,-42.1,66.1,-28.3C72.1,-14.6,75.9,0.3,73.8,14.7C71.7,29,63.7,42.8,52.2,53.3C40.7,63.8,25.7,71,9.2,74.3C-7.2,77.5,-25.1,76.7,-39.8,69.4C-54.6,62.1,-66.2,48.3,-73.1,32.6C-80,16.9,-82.2,-0.7,-77.7,-16.4C-73.2,-32.1,-62,-45.8,-48.5,-53.5C-35,-61.2,-19.2,-62.8,-2.5,-59.5C14.3,-56.2,29.1,-71.1,40.5,-62.9Z" transform="translate(100 100)" />
             </svg>
           </div>
         </div>
@@ -117,8 +117,8 @@ export const DashboardPage = () => {
                   <p className="text-sm text-slate-500 dark:text-slate-400">Total Diseases</p>
                   <p className="text-3xl font-heading font-bold mt-1">{stats?.totalDiseases || 0}</p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-sage-100 dark:bg-sage-900/30 flex items-center justify-center">
-                  <BookOpen className="w-6 h-6 text-sage-600 dark:text-sage-400" />
+                <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                  <BookOpen className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
               </div>
             </CardContent>
@@ -174,7 +174,7 @@ export const DashboardPage = () => {
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-lg font-heading">Recently Viewed</CardTitle>
               <Link to="/recent">
-                <Button variant="ghost" size="sm" className="text-sage-600 hover:text-sage-700">
+                <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
                   View all <ChevronRight className="w-4 h-4 ml-1" />
                 </Button>
               </Link>
@@ -211,7 +211,7 @@ export const DashboardPage = () => {
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-lg font-heading">Your Bookmarks</CardTitle>
               <Link to="/bookmarks">
-                <Button variant="ghost" size="sm" className="text-sage-600 hover:text-sage-700">
+                <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
                   View all <ChevronRight className="w-4 h-4 ml-1" />
                 </Button>
               </Link>
@@ -253,16 +253,16 @@ export const DashboardPage = () => {
                 <Link 
                   key={category.id}
                   to={`/search?category=${category.id}`}
-                  className="p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-sage-300 dark:hover:border-sage-700 hover:shadow-md transition-all group"
+                  className="p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-700 hover:shadow-md transition-all group"
                   data-testid={`category-card-${category.id}`}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <Badge variant="secondary" className="bg-sage-100 text-sage-700 dark:bg-sage-900/30 dark:text-sage-400">
+                    <Badge variant="secondary" className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
                       {category.disease_count} diseases
                     </Badge>
-                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-sage-600 transition-colors" />
+                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
                   </div>
-                  <h3 className="font-heading font-semibold text-slate-900 dark:text-white group-hover:text-sage-700 dark:group-hover:text-sage-400 transition-colors">
+                  <h3 className="font-heading font-semibold text-slate-900 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">
                     {category.name}
                   </h3>
                   <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
