@@ -630,7 +630,7 @@ async def inline_save_single_language(
     request: InlineSaveRequest,
     user: dict = Depends(get_current_user)
 ):
-    """Save disease content for a single language only"""
+    """Save disease content for a single section in a single language"""
     if user["role"] != UserRole.ADMIN:
         raise HTTPException(status_code=403, detail="Only admins can edit diseases")
     
@@ -641,23 +641,33 @@ async def inline_save_single_language(
     now = datetime.now(timezone.utc).isoformat()
     update_data = {"updated_at": now}
     
-    # Sanitize and prepare fields for update
-    for field, content in request.fields.items():
-        # Sanitize input - remove potentially dangerous content
-        sanitized = re.sub(r'<script[^>]*>.*?</script>', '', content, flags=re.IGNORECASE | re.DOTALL)
-        sanitized = re.sub(r'on\w+\s*=', '', sanitized, flags=re.IGNORECASE)
-        
-        if request.language == "en":
-            # For English, save directly to the main field
-            update_data[field] = sanitized
-        else:
-            # For other languages, save to field_{lang} format
-            update_data[f"{field}_{request.language}"] = sanitized
+    # Sanitize input
+    sanitized = re.sub(r'<script[^>]*>.*?</script>', '', request.content, flags=re.IGNORECASE | re.DOTALL)
+    sanitized = re.sub(r'on\w+\s*=', '', sanitized, flags=re.IGNORECASE)
     
-    # Update metadata
+    # Determine field key based on language
+    if request.language == "en":
+        field_key = request.section_id
+    else:
+        field_key = f"{request.section_id}_{request.language}"
+    
+    update_data[field_key] = sanitized
+    
+    # Update section-level edit metadata
+    section_meta_key = f"{request.section_id}_edit_meta"
+    section_meta = {
+        "last_edited_at": now,
+        "last_edited_by": user["id"],
+        "last_edited_by_name": user.get("name", "Admin"),
+        "last_edited_language": request.language
+    }
+    update_data[section_meta_key] = section_meta
+    
+    # Update global metadata
     update_data["last_edited_language"] = request.language
     update_data["last_edited_at"] = now
     update_data["last_edited_by"] = user["id"]
+    update_data["last_edited_section"] = request.section_id
     update_data["version"] = disease.get("version", 1) + 1
     
     await db.diseases.update_one(
@@ -673,7 +683,8 @@ async def inline_save_single_language(
         "data": updated,
         "created_by": user["id"],
         "created_at": now,
-        "edit_type": "single_language",
+        "edit_type": "single_section",
+        "section_id": request.section_id,
         "language": request.language
     })
     
@@ -682,7 +693,7 @@ async def inline_save_single_language(
     updated["category_name"] = category["name"] if category else ""
     
     return {
-        "message": f"Saved in {request.language}",
+        "message": f"Saved {request.section_id} in {request.language}",
         "disease": updated
     }
 
