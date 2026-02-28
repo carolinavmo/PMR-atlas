@@ -54,6 +54,29 @@ export const SectionMedia = ({
       size: '50',
       alignment: 'center'
     });
+    setUploadPreview(null);
+  };
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Create a data URL for local preview and storage
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const dataUrl = event.target.result;
+        setMediaForm(prev => ({ ...prev, url: dataUrl }));
+        setUploadPreview({
+          name: file.name,
+          size: (file.size / 1024).toFixed(1) + ' KB',
+          type: file.type
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+    // Reset the input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   const handleAddMedia = () => {
