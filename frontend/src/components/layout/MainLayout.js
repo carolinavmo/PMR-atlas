@@ -41,7 +41,7 @@ const themeColors = {
 export const MainLayout = ({ children }) => {
   const { user, logout, isAdmin, getAuthHeaders } = useAuth();
   const { isDark, toggleTheme } = useTheme();
-  const { toggleLanguage, getCurrentLanguageInfo } = useLanguage();
+  const { currentLanguage, setLanguage, getCurrentLanguageInfo, languages } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
   
