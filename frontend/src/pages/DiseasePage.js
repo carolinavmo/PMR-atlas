@@ -617,7 +617,7 @@ export const DiseasePage = () => {
                       </div>
                     </div>
                   ) : (
-                    <div className="mb-4 clearfix">
+                    <div className="mb-4 clearfix w-full">
                       {/* Media positioned INLINE (left/right/center) */}
                       <SectionMedia
                         media={sectionMedia}
@@ -625,7 +625,9 @@ export const DiseasePage = () => {
                         readOnly={!isEditor}
                         position="inline"
                       />
-                      {renderSectionContent(section.id, content)}
+                      <div className="w-full">
+                        {renderSectionContent(section.id, content)}
+                      </div>
                       
                       {/* Add more text button */}
                       {isEditor && section.id !== 'references' && (
