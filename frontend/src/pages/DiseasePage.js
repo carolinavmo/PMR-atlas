@@ -15,7 +15,7 @@ import axios from 'axios';
 import { 
   Bookmark, BookmarkCheck, FileText, Pencil, Check, X,
   ArrowLeft, Save, Clock, Loader2, Globe, AlertTriangle, User, Image,
-  ChevronDown, ChevronRight
+  ChevronDown, ChevronRight, Copy
 } from 'lucide-react';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
