@@ -475,18 +475,19 @@ export const DiseasePage = () => {
               <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg mb-4">
                 <span className="text-sm text-blue-700 dark:text-blue-300">You have unsaved changes</span>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" onClick={discardChanges}>
+                  <Button variant="outline" size="sm" onClick={discardChanges} disabled={saving || translating}>
                     <X className="w-4 h-4 mr-1" />
                     Discard
                   </Button>
                   <Button 
                     size="sm" 
                     onClick={saveAllChanges}
-                    disabled={saving}
+                    disabled={saving || translating}
                     className="bg-blue-600 hover:bg-blue-700"
                   >
-                    <Save className="w-4 h-4 mr-1" />
-                    {saving ? 'Saving...' : 'Save Changes'}
+                    {(saving || translating) && <Loader2 className="w-4 h-4 mr-1 animate-spin" />}
+                    {!saving && !translating && <Save className="w-4 h-4 mr-1" />}
+                    {saving ? 'Saving...' : translating ? 'Translating...' : 'Save & Translate'}
                   </Button>
                 </div>
               </div>
