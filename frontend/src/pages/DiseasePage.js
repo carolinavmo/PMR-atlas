@@ -172,12 +172,20 @@ export const DiseasePage = () => {
     setHasChanges(true);
   };
 
-  const handleMediaChange = (newImages) => {
+  const handleSectionMediaChange = (sectionId, newMedia) => {
     setEditedContent(prev => ({
       ...prev,
-      images: newImages.map(img => typeof img === 'string' ? img : img.url)
+      [`${sectionId}_media`]: newMedia
     }));
     setHasChanges(true);
+  };
+
+  const getSectionMedia = (sectionId) => {
+    const mediaKey = `${sectionId}_media`;
+    if (editedContent.hasOwnProperty(mediaKey)) {
+      return editedContent[mediaKey];
+    }
+    return disease?.[mediaKey] || [];
   };
 
   const saveAllChanges = async () => {
