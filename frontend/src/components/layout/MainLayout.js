@@ -144,7 +144,7 @@ export const MainLayout = ({ children }) => {
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                     <Input
-                      placeholder="Search diseases..."
+                      placeholder={t('searchDiseases')}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="pl-9 search-input"
@@ -158,31 +158,31 @@ export const MainLayout = ({ children }) => {
               <div className="px-4 pb-4 space-y-1">
                 <Link to="/dashboard" className={`sidebar-item ${location.pathname === '/dashboard' ? 'active' : ''}`} data-testid="nav-dashboard">
                   <Home className="w-4 h-4" />
-                  <span>Dashboard</span>
+                  <span>{t('dashboard')}</span>
                 </Link>
                 <Link to="/bookmarks" className={`sidebar-item ${location.pathname === '/bookmarks' ? 'active' : ''}`} data-testid="nav-bookmarks">
                   <Bookmark className="w-4 h-4" />
-                  <span>Bookmarks</span>
+                  <span>{t('bookmarks')}</span>
                 </Link>
                 <Link to="/notes" className={`sidebar-item ${location.pathname === '/notes' ? 'active' : ''}`} data-testid="nav-notes">
                   <FileText className="w-4 h-4" />
-                  <span>My Notes</span>
+                  <span>{t('myNotes')}</span>
                 </Link>
                 <Link to="/recent" className={`sidebar-item ${location.pathname === '/recent' ? 'active' : ''}`} data-testid="nav-recent">
                   <Clock className="w-4 h-4" />
-                  <span>Recently Viewed</span>
+                  <span>{t('recentlyViewed')}</span>
                 </Link>
                 {isAdmin && (
                   <Link to="/admin" className={`sidebar-item ${location.pathname.startsWith('/admin') ? 'active' : ''}`} data-testid="nav-admin">
                     <Shield className="w-4 h-4" />
-                    <span>Admin Panel</span>
+                    <span>{t('adminPanel')}</span>
                   </Link>
                 )}
               </div>
 
               {/* Categories */}
               <div className="px-4 py-2">
-                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Categories</h3>
+                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">{t('categories')}</h3>
               </div>
 
               <ScrollArea className="flex-1 px-2">
