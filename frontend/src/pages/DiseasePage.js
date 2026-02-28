@@ -687,36 +687,85 @@ export const DiseasePage = () => {
             </div>
           )}
 
-          {/* Content Sections - Per-Section Editing */}
-          <div>
+          {/* Expand/Collapse All Buttons */}
+          <div className="flex items-center justify-end gap-2 mb-6">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={expandAllSections}
+              className="text-slate-500 hover:text-slate-700"
+            >
+              Expand All
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={collapseAllSections}
+              className="text-slate-500 hover:text-slate-700"
+            >
+              Collapse All
+            </Button>
+          </div>
+
+          {/* Content Sections - Collapsible */}
+          <div className="space-y-3">
             {sections.map((section) => {
               const content = getCurrentContent(section.id);
               const sectionMedia = getSectionMedia(section.id);
               const editMeta = getSectionEditMeta(section.id);
               const isEditing = editingSection === section.id;
               const isEditingMedia = editingMediaSection === section.id;
+              const isExpanded = expandedSections[section.id] || isEditing || isEditingMedia;
               
-              // Skip empty sections in view mode (except if references or editing media)
-              if (!isEditing && !isEditingMedia && !content && sectionMedia.length === 0 && section.id !== 'references') return null;
+              // Skip empty sections in view mode (except if references or editing)
+              const hasContent = content || sectionMedia.length > 0;
+              if (!isEditing && !isEditingMedia && !hasContent && section.id !== 'references') return null;
               if (!isEditing && !isEditingMedia && section.id === 'references' && Array.isArray(content) && content.length === 0 && sectionMedia.length === 0) return null;
               
               return (
                 <div 
                   key={section.id} 
                   ref={el => sectionRefs.current[section.id] = el}
-                  className={`w-full mb-6 ${isEditing ? 'p-4 rounded-lg border-2 border-blue-400 bg-blue-50/50 dark:bg-blue-900/20' : ''} ${isEditingMedia ? 'p-4 rounded-lg border-2 border-purple-400 bg-purple-50/50 dark:bg-purple-900/20' : ''}`}
+                  className={`
+                    w-full rounded-xl overflow-hidden transition-all duration-300
+                    ${isEditing ? 'ring-2 ring-blue-400 bg-gradient-to-br from-blue-50 to-indigo-50/50 dark:from-blue-900/20 dark:to-indigo-900/20' : ''}
+                    ${isEditingMedia ? 'ring-2 ring-purple-400 bg-gradient-to-br from-purple-50 to-pink-50/50 dark:from-purple-900/20 dark:to-pink-900/20' : ''}
+                    ${!isEditing && !isEditingMedia ? 'bg-white dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/50 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-md' : ''}
+                  `}
                   data-testid={`section-${section.id}`}
                 >
-                  {/* Section Header */}
-                  <div className="flex items-center justify-between group w-full mb-3 pb-2 border-b border-slate-200 dark:border-slate-700">
+                  {/* Section Header - Clickable */}
+                  <button
+                    onClick={() => !isEditing && !isEditingMedia && toggleSection(section.id)}
+                    className={`
+                      w-full px-5 py-4 flex items-center justify-between
+                      ${!isEditing && !isEditingMedia ? 'cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/30' : 'cursor-default'}
+                      transition-colors duration-200
+                    `}
+                  >
                     <div className="flex items-center gap-3">
-                      <h3 className="text-base font-semibold text-slate-900 dark:text-white" id={section.id}>
+                      {/* Expand/Collapse Icon */}
+                      {!isEditing && !isEditingMedia && (
+                        <div className={`
+                          w-6 h-6 rounded-full flex items-center justify-center
+                          ${isExpanded ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-600' : 'bg-slate-100 dark:bg-slate-700 text-slate-400'}
+                          transition-all duration-200
+                        `}>
+                          {isExpanded ? (
+                            <ChevronDown className="w-4 h-4" />
+                          ) : (
+                            <ChevronRight className="w-4 h-4" />
+                          )}
+                        </div>
+                      )}
+                      
+                      <h3 className="text-base font-semibold text-slate-800 dark:text-slate-100" id={section.id}>
                         {section.label}
                       </h3>
                       
-                      {/* Last Edited indicator - visible to all */}
+                      {/* Last Edited indicator */}
                       {editMeta && (
-                        <span className="text-xs text-slate-400 flex items-center gap-1" data-testid={`edit-meta-${section.id}`}>
+                        <span className="hidden sm:flex text-xs text-slate-400 items-center gap-1" data-testid={`edit-meta-${section.id}`}>
                           <User className="w-3 h-3" />
                           {editMeta.last_edited_by_name || 'Admin'} • {formatRelativeTime(editMeta.last_edited_at)}
                           {editMeta.translated_at && (
@@ -728,35 +777,41 @@ export const DiseasePage = () => {
                       )}
                     </div>
                     
-                    {/* Edit button - only for admins, only when not already editing */}
+                    {/* Edit buttons - only for admins */}
                     {isAdmin && !editingSection && !editingMediaSection && section.id !== 'references' && (
-                      <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      <div 
+                        className="flex items-center gap-1"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="text-slate-500 hover:text-blue-600"
+                          className="text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30"
                           onClick={() => startSectionEdit(section.id)}
                           data-testid={`edit-btn-${section.id}`}
                         >
-                          <Pencil className="w-4 h-4 mr-1" />
-                          {t('edit')}
+                          <Pencil className="w-4 h-4" />
                         </Button>
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="text-slate-500 hover:text-purple-600"
+                          className="text-slate-400 hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/30"
                           onClick={() => startMediaEdit(section.id)}
                           data-testid={`media-btn-${section.id}`}
                         >
-                          <Image className="w-4 h-4 mr-1" />
-                          Media
+                          <Image className="w-4 h-4" />
                         </Button>
                       </div>
                     )}
-                  </div>
+                  </button>
                   
-                  {/* Section Content */}
-                  {isEditing ? (
+                  {/* Section Content - Collapsible */}
+                  <div className={`
+                    overflow-hidden transition-all duration-300 ease-in-out
+                    ${isExpanded ? 'max-h-[5000px] opacity-100' : 'max-h-0 opacity-0'}
+                  `}>
+                    <div className="px-5 pb-5 pt-0">
+                      {isEditing ? (
                     // Edit Mode for this section
                     <div className="space-y-4">
                       {/* Language indicator */}
