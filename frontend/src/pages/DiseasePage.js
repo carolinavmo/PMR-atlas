@@ -311,9 +311,37 @@ export const DiseasePage = () => {
 
   return (
     <MainLayout>
-      <div className="flex gap-8" data-testid="disease-page" ref={contentRef}>
+      <div className="relative" data-testid="disease-page" ref={contentRef}>
+        {/* Floating Table of Contents - Fixed Position */}
+        <div className="hidden xl:block fixed right-8 top-24 w-56 z-20">
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 shadow-lg max-h-[calc(100vh-120px)] overflow-auto scrollbar-thin">
+            <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-3">
+              On This Page
+            </h3>
+            <nav className="space-y-0.5">
+              {sections.map((section) => {
+                const content = getCurrentContent(section.id);
+                // Only show sections with content
+                if (section.id !== 'media' && section.id !== 'references' && !content) return null;
+                if (section.id === 'references' && Array.isArray(content) && content.length === 0) return null;
+                if (section.id === 'media' && (!disease.images || disease.images.length === 0) && !isEditor) return null;
+                
+                return (
+                  <button
+                    key={section.id}
+                    onClick={() => scrollToSection(section.id)}
+                    className={`toc-link w-full text-left ${activeSection === section.id ? 'active' : ''}`}
+                  >
+                    {section.label}
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
+        </div>
+
         {/* Main Content */}
-        <div className="flex-1 max-w-3xl">
+        <div className="max-w-3xl xl:mr-72">
           {/* Back Button */}
           <Link to="/dashboard" className="inline-flex items-center text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 mb-4">
             <ArrowLeft className="w-4 h-4 mr-1" />
