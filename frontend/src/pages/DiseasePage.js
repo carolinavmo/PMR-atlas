@@ -448,8 +448,39 @@ export const DiseasePage = () => {
   return (
     <MainLayout>
       <div className="relative" data-testid="disease-page" ref={contentRef}>
-        {/* Main Content - Full width */}
-        <div className="w-full">
+        {/* Floating Table of Contents - Fixed on right */}
+        <div className="hidden xl:block fixed right-6 top-24 w-48 z-20">
+          <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-3 shadow-lg max-h-[calc(100vh-120px)] overflow-auto">
+            <h3 className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-2 px-2">
+              {t('onThisPage')}
+            </h3>
+            <nav className="space-y-0.5">
+              {sections.map((section) => {
+                const content = getCurrentContent(section.id);
+                const sectionMedia = getSectionMedia(section.id);
+                if (section.id !== 'references' && !content && sectionMedia.length === 0) return null;
+                if (section.id === 'references' && Array.isArray(content) && content.length === 0 && sectionMedia.length === 0) return null;
+                
+                return (
+                  <button
+                    key={section.id}
+                    onClick={() => scrollToSection(section.id)}
+                    className={`w-full text-left text-xs px-2 py-1.5 rounded transition-colors ${
+                      activeSection === section.id 
+                        ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-medium' 
+                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    }`}
+                  >
+                    {section.label}
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
+        </div>
+
+        {/* Main Content - Full width with right margin for TOC on xl screens */}
+        <div className="w-full xl:mr-56">
           {/* Back Button and Disease Search */}
           <div className="flex items-center justify-between gap-4 mb-4 w-full">
             <Link to="/dashboard" className="inline-flex items-center text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
