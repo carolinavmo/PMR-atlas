@@ -6,16 +6,23 @@ import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Textarea } from '../components/ui/textarea';
 import { Separator } from '../components/ui/separator';
-import { RichTextEditor } from '../components/editor/RichTextEditor';
+import { RichTextEditor, AddTextBlock } from '../components/editor/RichTextEditor';
 import { SectionMedia } from '../components/editor/SectionMedia';
+import { LanguageSwitcher } from '../components/LanguageSwitcher';
 import { toast } from 'sonner';
 import axios from 'axios';
 import { 
   Bookmark, BookmarkCheck, FileText, Edit, Pencil, Check, X,
-  ArrowLeft, Save, Clock
+  ArrowLeft, Save, Clock, Type, Plus
 } from 'lucide-react';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
+const LANGUAGES = [
+  { code: 'en', name: 'English', flag: '🇬🇧' },
+  { code: 'pt', name: 'Português', flag: '🇵🇹' },
+  { code: 'es', name: 'Español', flag: '🇪🇸' },
+];
 
 const sections = [
   { id: 'definition', label: 'Definition' },
@@ -49,6 +56,7 @@ export const DiseasePage = () => {
   const [editedContent, setEditedContent] = useState({});
   const [saving, setSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
+  const [currentLanguage, setCurrentLanguage] = useState('en');
 
   const contentRef = useRef(null);
   const sectionRefs = useRef({});
