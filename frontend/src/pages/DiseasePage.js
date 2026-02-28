@@ -19,27 +19,34 @@ import {
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-const sections = [
-  { id: 'definition', label: 'Definition' },
-  { id: 'epidemiology', label: 'Epidemiology' },
-  { id: 'pathophysiology', label: 'Pathophysiology' },
-  { id: 'biomechanics', label: 'Biomechanics' },
-  { id: 'clinical_presentation', label: 'Clinical Presentation' },
-  { id: 'physical_examination', label: 'Physical Examination' },
-  { id: 'imaging_findings', label: 'Imaging Findings' },
-  { id: 'differential_diagnosis', label: 'Differential Diagnosis' },
-  { id: 'treatment_conservative', label: 'Conservative Treatment' },
-  { id: 'treatment_interventional', label: 'Interventional Treatment' },
-  { id: 'treatment_surgical', label: 'Surgical Treatment' },
-  { id: 'rehabilitation_protocol', label: 'Rehabilitation Protocol' },
-  { id: 'prognosis', label: 'Prognosis' },
-  { id: 'references', label: 'References' },
+// Section definitions with translation keys
+const sectionDefs = [
+  { id: 'definition', key: 'definition' },
+  { id: 'epidemiology', key: 'epidemiology' },
+  { id: 'pathophysiology', key: 'pathophysiology' },
+  { id: 'biomechanics', key: 'biomechanics' },
+  { id: 'clinical_presentation', key: 'clinicalPresentation' },
+  { id: 'physical_examination', key: 'physicalExamination' },
+  { id: 'imaging_findings', key: 'imagingFindings' },
+  { id: 'differential_diagnosis', key: 'differentialDiagnosis' },
+  { id: 'treatment_conservative', key: 'conservativeTreatment' },
+  { id: 'treatment_interventional', key: 'interventionalTreatment' },
+  { id: 'treatment_surgical', key: 'surgicalTreatment' },
+  { id: 'rehabilitation_protocol', key: 'rehabilitationProtocol' },
+  { id: 'prognosis', key: 'prognosis' },
+  { id: 'references', key: 'references' },
 ];
 
 export const DiseasePage = () => {
   const { id } = useParams();
   const { getAuthHeaders, isEditor } = useAuth();
-  const { currentLanguage } = useLanguage();
+  const { currentLanguage, t } = useLanguage();
+  
+  // Generate sections with translated labels
+  const sections = sectionDefs.map(s => ({
+    id: s.id,
+    label: t(s.key)
+  }));
   
   const [disease, setDisease] = useState(null);
   const [loading, setLoading] = useState(true);
