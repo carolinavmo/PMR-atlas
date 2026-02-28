@@ -118,43 +118,54 @@ export const SectionMedia = ({
   };
 
   const getMediaStyle = (item) => {
-    const width = `${item.size || 50}%`;
+    const sizePercent = item.size || '50';
     const alignment = item.alignment || 'center';
     
-    let containerStyle = {};
+    // Map size percentage to Tailwind width classes
+    const widthClass = {
+      '25': 'w-1/4',
+      '50': 'w-1/2', 
+      '75': 'w-3/4',
+      '100': 'w-full'
+    }[sizePercent] || 'w-1/2';
+    
     let wrapperClass = '';
+    let containerClass = '';
     
     switch (alignment) {
       case 'left':
-        containerStyle = { float: 'left', marginRight: '1rem', marginBottom: '0.5rem' };
+        wrapperClass = 'float-left mr-4 mb-2';
+        containerClass = widthClass;
         break;
       case 'right':
-        containerStyle = { float: 'right', marginLeft: '1rem', marginBottom: '0.5rem' };
+        wrapperClass = 'float-right ml-4 mb-2';
+        containerClass = widthClass;
         break;
       case 'center':
-        wrapperClass = 'flex justify-center';
+        wrapperClass = 'flex justify-center w-full';
+        containerClass = widthClass;
         break;
       case 'before':
       case 'after':
       default:
-        wrapperClass = 'flex justify-center';
+        wrapperClass = 'flex justify-center w-full';
+        containerClass = widthClass;
         break;
     }
     
-    return { containerStyle, wrapperClass, width };
+    return { wrapperClass, containerClass, alignment };
   };
 
   const renderMediaItem = (item, index) => {
-    const { containerStyle, wrapperClass, width } = getMediaStyle(item);
+    const { wrapperClass, containerClass, alignment } = getMediaStyle(item);
     const isVideo = item.type === 'video' || item.url?.includes('youtube') || item.url?.includes('vimeo');
     
     return (
       <div 
         key={index} 
         className={`relative group my-4 ${wrapperClass}`}
-        style={containerStyle}
       >
-        <div style={{ width }} className="relative">
+        <div className={`${containerClass} relative`}>
           {isVideo ? (
             <div className="aspect-video rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800">
               {item.url?.includes('youtube') ? (
