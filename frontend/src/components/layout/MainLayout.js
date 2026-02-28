@@ -127,6 +127,61 @@ export const MainLayout = ({ children }) => {
     }
   };
 
+  // Drag and drop handlers for categories (admin only)
+  const handleDragStart = (e, categoryId) => {
+    if (!isAdmin) return;
+    setDraggedCategory(categoryId);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e, categoryId) => {
+    if (!isAdmin || !draggedCategory || draggedCategory === categoryId) return;
+    e.preventDefault();
+    setDropTargetId(categoryId);
+  };
+
+  const handleDragLeave = () => {
+    setDropTargetId(null);
+  };
+
+  const handleDrop = async (e, targetCategoryId) => {
+    e.preventDefault();
+    if (!isAdmin || !draggedCategory || draggedCategory === targetCategoryId) {
+      setDraggedCategory(null);
+      setDropTargetId(null);
+      return;
+    }
+
+    const draggedIndex = categories.findIndex(c => c.id === draggedCategory);
+    const targetIndex = categories.findIndex(c => c.id === targetCategoryId);
+    
+    const newCategories = [...categories];
+    const [removed] = newCategories.splice(draggedIndex, 1);
+    newCategories.splice(targetIndex, 0, removed);
+    
+    setCategories(newCategories);
+    setDraggedCategory(null);
+    setDropTargetId(null);
+
+    try {
+      const headers = getAuthHeaders();
+      await axios.put(
+        `${API_URL}/categories/reorder`,
+        { category_ids: newCategories.map(c => c.id) },
+        { headers }
+      );
+      toast.success('Categories reordered');
+    } catch (err) {
+      fetchCategories();
+      toast.error('Failed to reorder');
+    }
+  };
+
+  const handleDragEnd = () => {
+    setDraggedCategory(null);
+    setDropTargetId(null);
+  };
+
   const getInitials = (name) => {
     return name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U';
   };
