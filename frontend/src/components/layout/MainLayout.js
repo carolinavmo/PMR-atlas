@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { ScrollArea } from '../ui/scroll-area';
@@ -14,7 +15,7 @@ import {
   Activity, Search, ChevronRight, ChevronDown, Moon, Sun, 
   Menu, X, Bookmark, FileText, Clock, Settings, LogOut,
   User, Home, Shield, Bone, Brain, Zap, Trophy, HeartPulse,
-  Baby, Accessibility, PanelLeftClose, PanelLeft
+  Baby, Accessibility, PanelLeftClose, PanelLeft, Globe
 } from 'lucide-react';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
