@@ -331,6 +331,39 @@ export const DiseasePage = () => {
     setExpandedSections({});
   };
 
+  // Copy section content to clipboard
+  const copySectionContent = async (sectionId, e) => {
+    e.stopPropagation(); // Prevent section toggle
+    
+    const content = getCurrentContent(sectionId);
+    let textToCopy = '';
+    
+    if (sectionId === 'references' && Array.isArray(content)) {
+      textToCopy = content.join('\n');
+    } else {
+      textToCopy = content || '';
+    }
+    
+    if (!textToCopy) {
+      toast.error('No content to copy');
+      return;
+    }
+    
+    try {
+      await navigator.clipboard.writeText(textToCopy);
+      toast.success('Copied to clipboard!');
+    } catch (err) {
+      // Fallback for older browsers
+      const textarea = document.createElement('textarea');
+      textarea.value = textToCopy;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      toast.success('Copied to clipboard!');
+    }
+  };
+
   const scrollToSection = (sectionId) => {
     // Expand the section first
     setExpandedSections(prev => ({
