@@ -135,7 +135,7 @@ export const SearchPage = () => {
                   data-testid="search-input"
                 />
               </div>
-              <Button type="submit" className="bg-sage-600 hover:bg-sage-700" data-testid="search-btn">
+              <Button type="submit" className="bg-blue-600 hover:bg-blue-700" data-testid="search-btn">
                 Search
               </Button>
             </form>
@@ -231,7 +231,7 @@ export const SearchPage = () => {
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
-                          <Badge variant="outline" className="text-xs text-sage-600 border-sage-300">
+                          <Badge variant="outline" className="text-xs text-blue-600 border-blue-300">
                             {disease.category_name}
                           </Badge>
                           {disease.tags?.slice(0, 3).map((tag) => (

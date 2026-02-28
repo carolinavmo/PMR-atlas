@@ -76,7 +76,7 @@ export const NotesPage = () => {
                 Add notes to diseases while studying
               </p>
               <Link to="/search">
-                <Button className="bg-sage-600 hover:bg-sage-700">
+                <Button className="bg-blue-600 hover:bg-blue-700">
                   Browse Diseases
                 </Button>
               </Link>
