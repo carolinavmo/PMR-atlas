@@ -561,17 +561,52 @@ export const DiseasePage = () => {
           {/* Header - More Compact */}
           <div className="mb-6">
             <div className="flex items-start justify-between gap-4 mb-3">
-              <div>
+              <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
                   <Badge variant="outline" className="text-blue-600 border-blue-300 text-xs">
                     {disease.category_name}
                   </Badge>
+                  {/* Language indicator */}
+                  <Badge variant="secondary" className="text-xs">
+                    <Globe className="w-3 h-3 mr-1" />
+                    {LANGUAGE_NAMES[currentLanguage]}
+                  </Badge>
+                  {editMode && (
+                    <Badge className="bg-amber-100 text-amber-700 text-xs">
+                      <Pencil className="w-3 h-3 mr-1" />
+                      Editing
+                    </Badge>
+                  )}
                 </div>
-                <h1 className="text-2xl lg:text-3xl font-heading font-bold text-slate-900 dark:text-white" data-testid="disease-title">
-                  {getDiseaseName()}
-                </h1>
+                {/* Editable title */}
+                {editMode ? (
+                  <input
+                    type="text"
+                    value={editedFields.name || ''}
+                    onChange={(e) => handleFieldChange('name', e.target.value)}
+                    className="text-2xl lg:text-3xl font-heading font-bold text-slate-900 dark:text-white bg-transparent border-b-2 border-blue-400 focus:outline-none focus:border-blue-600 w-full"
+                    data-testid="disease-title-edit"
+                  />
+                ) : (
+                  <h1 className="text-2xl lg:text-3xl font-heading font-bold text-slate-900 dark:text-white" data-testid="disease-title">
+                    {getDiseaseName()}
+                  </h1>
+                )}
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
+                {/* Admin Edit Button */}
+                {isAdmin && !editMode && (
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={enterEditMode}
+                    className="bg-blue-600 hover:bg-blue-700"
+                    data-testid="edit-mode-btn"
+                  >
+                    <Pencil className="w-4 h-4 mr-1" />
+                    Edit
+                  </Button>
+                )}
                 <Button
                   variant="outline"
                   size="sm"
@@ -597,6 +632,52 @@ export const DiseasePage = () => {
                 </Button>
               </div>
             </div>
+
+            {/* Edit Mode Save Bar - Only for Admins */}
+            {editMode && isAdmin && (
+              <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg mb-4">
+                <div className="flex items-center gap-2">
+                  <Pencil className="w-4 h-4 text-blue-600" />
+                  <span className="text-sm text-blue-700 dark:text-blue-300">
+                    Editing in <strong>{LANGUAGE_NAMES[currentLanguage]}</strong>
+                  </span>
+                </div>
+                <div className="flex gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={cancelEditMode}
+                    disabled={saving || translating}
+                  >
+                    <X className="w-4 h-4 mr-1" />
+                    Cancel
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    size="sm" 
+                    onClick={saveCurrentLanguageOnly}
+                    disabled={saving || translating}
+                    className="border-blue-300 text-blue-700 hover:bg-blue-50"
+                    data-testid="save-single-lang-btn"
+                  >
+                    {saving && !translating && <Loader2 className="w-4 h-4 mr-1 animate-spin" />}
+                    {!saving && <Save className="w-4 h-4 mr-1" />}
+                    Save {LANGUAGE_NAMES[currentLanguage]} Only
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    onClick={() => setShowTranslateConfirm(true)}
+                    disabled={saving || translating}
+                    className="bg-green-600 hover:bg-green-700"
+                    data-testid="save-translate-btn"
+                  >
+                    {translating && <Loader2 className="w-4 h-4 mr-1 animate-spin" />}
+                    {!translating && <Globe className="w-4 h-4 mr-1" />}
+                    {translating ? 'Translating...' : 'Save + Translate All'}
+                  </Button>
+                </div>
+              </div>
+            )}
 
             {/* Tags */}
             {disease.tags?.length > 0 && (
