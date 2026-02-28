@@ -822,6 +822,71 @@ Rules:
         "translations_count": translated_count
     }
 
+@api_router.put("/diseases/{disease_id}/section-media")
+async def save_section_media(
+    disease_id: str,
+    request: SectionMediaSaveRequest,
+    user: dict = Depends(get_current_user)
+):
+    """Save media for a specific section"""
+    if user["role"] != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Only admins can edit diseases")
+    
+    disease = await db.diseases.find_one({"id": disease_id}, {"_id": 0})
+    if not disease:
+        raise HTTPException(status_code=404, detail="Disease not found")
+    
+    now = datetime.now(timezone.utc).isoformat()
+    
+    # Convert media items to dicts
+    media_list = [item.model_dump() for item in request.media]
+    
+    # Field key for media storage
+    media_field_key = f"{request.section_id}_media"
+    
+    update_data = {
+        media_field_key: media_list,
+        "updated_at": now,
+        "version": disease.get("version", 1) + 1
+    }
+    
+    # Update section media metadata
+    media_meta_key = f"{request.section_id}_media_meta"
+    media_meta = {
+        "last_edited_at": now,
+        "last_edited_by": user["id"],
+        "last_edited_by_name": user.get("name", "Admin"),
+        "media_count": len(media_list)
+    }
+    update_data[media_meta_key] = media_meta
+    
+    await db.diseases.update_one(
+        {"id": disease_id},
+        {"$set": update_data}
+    )
+    
+    # Store version history
+    updated = await db.diseases.find_one({"id": disease_id}, {"_id": 0})
+    await db.disease_versions.insert_one({
+        "disease_id": disease_id,
+        "version": updated["version"],
+        "data": updated,
+        "created_by": user["id"],
+        "created_at": now,
+        "edit_type": "section_media",
+        "section_id": request.section_id
+    })
+    
+    # Get category name
+    category = await db.categories.find_one({"id": updated.get("category_id", "")}, {"_id": 0})
+    updated["category_name"] = category["name"] if category else ""
+    
+    return {
+        "message": f"Saved media for {request.section_id}",
+        "disease": updated,
+        "media_count": len(media_list)
+    }
+
 @api_router.get("/diseases/{disease_id}/versions")
 async def get_disease_versions(
     disease_id: str,
