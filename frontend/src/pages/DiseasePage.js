@@ -19,12 +19,6 @@ import {
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-const LANGUAGES = [
-  { code: 'en', name: 'English', flag: '🇬🇧' },
-  { code: 'pt', name: 'Português', flag: '🇵🇹' },
-  { code: 'es', name: 'Español', flag: '🇪🇸' },
-];
-
 const sections = [
   { id: 'definition', label: 'Definition' },
   { id: 'epidemiology', label: 'Epidemiology' },
