@@ -89,16 +89,16 @@ export const DashboardPage = () => {
               <span className="text-sm font-medium">{getTimeGreeting()}</span>
             </div>
             <h1 className="text-2xl lg:text-3xl font-heading font-bold text-slate-900 dark:text-white mb-2">
-              Welcome back, {user?.name?.split(' ')[0]}!
+              {t('welcomeBack')}, {user?.name?.split(' ')[0]}!
             </h1>
             <p className="text-slate-600 dark:text-slate-400 max-w-lg">
-              Continue your learning journey with our comprehensive PMR disease database.
+              {t('continueYourLearning')}
             </p>
             <div className="mt-4">
               <Link to="/search?q=">
                 <Button className="bg-blue-600 hover:bg-blue-700 text-white" data-testid="explore-btn">
                   <Search className="w-4 h-4 mr-2" />
-                  Explore Diseases
+                  {t('exploreDiseases')}
                 </Button>
               </Link>
             </div>
