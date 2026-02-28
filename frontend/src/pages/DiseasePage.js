@@ -73,6 +73,9 @@ export const DiseasePage = () => {
   // Per-section media editing state
   const [editingMediaSection, setEditingMediaSection] = useState(null); // Which section's media is being edited
   const [savingMedia, setSavingMedia] = useState(false);
+  
+  // Collapsible sections state - all collapsed by default
+  const [expandedSections, setExpandedSections] = useState({});
 
   const contentRef = useRef(null);
   const sectionRefs = useRef({});
