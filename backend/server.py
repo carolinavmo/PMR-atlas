@@ -161,7 +161,7 @@ class DiseaseUpdate(BaseModel):
     references_media: Optional[List[Dict[str, Any]]] = None
 
 class DiseaseResponse(BaseModel):
-    model_config = ConfigDict(extra="ignore")
+    model_config = ConfigDict(extra="allow")
     id: str
     name: str
     category_id: str
@@ -186,6 +186,35 @@ class DiseaseResponse(BaseModel):
     updated_at: str
     created_by: str = ""
     version: int = 1
+    # Translated fields (optional - dynamically added)
+    name_pt: Optional[str] = None
+    name_es: Optional[str] = None
+    definition_pt: Optional[str] = None
+    definition_es: Optional[str] = None
+    epidemiology_pt: Optional[str] = None
+    epidemiology_es: Optional[str] = None
+    pathophysiology_pt: Optional[str] = None
+    pathophysiology_es: Optional[str] = None
+    biomechanics_pt: Optional[str] = None
+    biomechanics_es: Optional[str] = None
+    clinical_presentation_pt: Optional[str] = None
+    clinical_presentation_es: Optional[str] = None
+    physical_examination_pt: Optional[str] = None
+    physical_examination_es: Optional[str] = None
+    imaging_findings_pt: Optional[str] = None
+    imaging_findings_es: Optional[str] = None
+    differential_diagnosis_pt: Optional[str] = None
+    differential_diagnosis_es: Optional[str] = None
+    treatment_conservative_pt: Optional[str] = None
+    treatment_conservative_es: Optional[str] = None
+    treatment_interventional_pt: Optional[str] = None
+    treatment_interventional_es: Optional[str] = None
+    treatment_surgical_pt: Optional[str] = None
+    treatment_surgical_es: Optional[str] = None
+    rehabilitation_protocol_pt: Optional[str] = None
+    rehabilitation_protocol_es: Optional[str] = None
+    prognosis_pt: Optional[str] = None
+    prognosis_es: Optional[str] = None
 
 class BookmarkCreate(BaseModel):
     disease_id: str
