@@ -603,6 +603,181 @@ async def delete_disease(
     
     return {"message": "Disease deleted"}
 
+# ==================== INLINE EDITING ROUTES ====================
+
+class InlineSaveRequest(BaseModel):
+    """Request model for inline save"""
+    language: str = "en"
+    fields: Dict[str, str]  # field_name -> content
+
+class InlineSaveAndTranslateRequest(BaseModel):
+    """Request model for save and translate"""
+    source_language: str = "en"
+    fields: Dict[str, str]  # field_name -> content
+    target_languages: List[str] = ["pt", "es"]
+
+@api_router.put("/diseases/{disease_id}/inline-save")
+async def inline_save_single_language(
+    disease_id: str,
+    request: InlineSaveRequest,
+    user: dict = Depends(get_current_user)
+):
+    """Save disease content for a single language only"""
+    if user["role"] != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Only admins can edit diseases")
+    
+    disease = await db.diseases.find_one({"id": disease_id}, {"_id": 0})
+    if not disease:
+        raise HTTPException(status_code=404, detail="Disease not found")
+    
+    now = datetime.now(timezone.utc).isoformat()
+    update_data = {"updated_at": now}
+    
+    # Sanitize and prepare fields for update
+    for field, content in request.fields.items():
+        # Sanitize input - remove potentially dangerous content
+        sanitized = re.sub(r'<script[^>]*>.*?</script>', '', content, flags=re.IGNORECASE | re.DOTALL)
+        sanitized = re.sub(r'on\w+\s*=', '', sanitized, flags=re.IGNORECASE)
+        
+        if request.language == "en":
+            # For English, save directly to the main field
+            update_data[field] = sanitized
+        else:
+            # For other languages, save to field_{lang} format
+            update_data[f"{field}_{request.language}"] = sanitized
+    
+    # Update metadata
+    update_data["last_edited_language"] = request.language
+    update_data["last_edited_at"] = now
+    update_data["last_edited_by"] = user["id"]
+    update_data["version"] = disease.get("version", 1) + 1
+    
+    await db.diseases.update_one(
+        {"id": disease_id},
+        {"$set": update_data}
+    )
+    
+    # Store version history
+    updated = await db.diseases.find_one({"id": disease_id}, {"_id": 0})
+    await db.disease_versions.insert_one({
+        "disease_id": disease_id,
+        "version": updated["version"],
+        "data": updated,
+        "created_by": user["id"],
+        "created_at": now,
+        "edit_type": "single_language",
+        "language": request.language
+    })
+    
+    # Get category name
+    category = await db.categories.find_one({"id": updated.get("category_id", "")}, {"_id": 0})
+    updated["category_name"] = category["name"] if category else ""
+    
+    return {
+        "message": f"Saved in {request.language}",
+        "disease": updated
+    }
+
+@api_router.put("/diseases/{disease_id}/inline-save-translate")
+async def inline_save_and_translate(
+    disease_id: str,
+    request: InlineSaveAndTranslateRequest,
+    user: dict = Depends(get_current_user)
+):
+    """Save disease content and translate to other languages"""
+    if user["role"] != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Only admins can edit diseases")
+    
+    disease = await db.diseases.find_one({"id": disease_id}, {"_id": 0})
+    if not disease:
+        raise HTTPException(status_code=404, detail="Disease not found")
+    
+    now = datetime.now(timezone.utc).isoformat()
+    update_data = {"updated_at": now}
+    
+    # First, save the source language content
+    for field, content in request.fields.items():
+        # Sanitize input
+        sanitized = re.sub(r'<script[^>]*>.*?</script>', '', content, flags=re.IGNORECASE | re.DOTALL)
+        sanitized = re.sub(r'on\w+\s*=', '', sanitized, flags=re.IGNORECASE)
+        
+        if request.source_language == "en":
+            update_data[field] = sanitized
+        else:
+            update_data[f"{field}_{request.source_language}"] = sanitized
+    
+    # Translate to target languages
+    source_lang_name = LANGUAGE_NAMES.get(request.source_language, 'English')
+    translated_count = 0
+    
+    try:
+        for target_lang in request.target_languages:
+            if target_lang == request.source_language:
+                continue
+                
+            target_lang_name = LANGUAGE_NAMES.get(target_lang, target_lang)
+            
+            chat = LlmChat(
+                api_key=EMERGENT_LLM_KEY,
+                session_id=f"translate-inline-{uuid.uuid4()}",
+                system_message=f"""You are a professional medical translator. Translate medical/clinical text from {source_lang_name} to {target_lang_name}. 
+
+Rules:
+- Preserve all medical terminology accurately
+- Maintain the same formatting (bullet points, line breaks, markdown)
+- Only output the translated text, nothing else"""
+            ).with_model("openai", "gpt-4.1-mini")
+            
+            for field, content in request.fields.items():
+                if content and content.strip():
+                    user_message = UserMessage(text=content)
+                    translated = await chat.send_message(user_message)
+                    
+                    if target_lang == "en":
+                        update_data[field] = translated
+                    else:
+                        update_data[f"{field}_{target_lang}"] = translated
+                    translated_count += 1
+    except Exception as e:
+        logger.error(f"Translation error: {str(e)}")
+        # Still save the source language even if translation fails
+    
+    # Update metadata
+    update_data["last_edited_language"] = request.source_language
+    update_data["last_edited_at"] = now
+    update_data["last_edited_by"] = user["id"]
+    update_data["last_translation_source"] = request.source_language
+    update_data["last_translation_at"] = now
+    update_data["version"] = disease.get("version", 1) + 1
+    
+    await db.diseases.update_one(
+        {"id": disease_id},
+        {"$set": update_data}
+    )
+    
+    # Store version history
+    updated = await db.diseases.find_one({"id": disease_id}, {"_id": 0})
+    await db.disease_versions.insert_one({
+        "disease_id": disease_id,
+        "version": updated["version"],
+        "data": updated,
+        "created_by": user["id"],
+        "created_at": now,
+        "edit_type": "save_and_translate",
+        "source_language": request.source_language,
+        "target_languages": request.target_languages
+    })
+    
+    # Get category name
+    category = await db.categories.find_one({"id": updated.get("category_id", "")}, {"_id": 0})
+    updated["category_name"] = category["name"] if category else ""
+    
+    return {
+        "message": f"Saved in {request.source_language} and translated to {len(request.target_languages) - 1} languages",
+        "disease": updated,
+        "translations_count": translated_count
+    }
+
 @api_router.get("/diseases/{disease_id}/versions")
 async def get_disease_versions(
     disease_id: str,
