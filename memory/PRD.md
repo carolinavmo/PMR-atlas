@@ -1,78 +1,43 @@
 # PMR Medical Education Platform - Product Requirements Document
 
-## Original Problem Statement
-Create a full-stack web application for a Medical Education Platform focused on Physical Medicine and Rehabilitation (PMR).
-
 ## Technical Stack
-- **Frontend:** React, Tailwind CSS, Shadcn/UI components
+- **Frontend:** React, Tailwind CSS, Shadcn/UI
 - **Backend:** FastAPI (Python)
 - **Database:** MongoDB
-- **Authentication:** JWT-based with role management
 - **Translation:** Google Translate API via emergentintegrations
 
 ## What's Been Implemented
 
 ### Core Features (Complete)
-- [x] JWT-based authentication with role management (admin, editor, student)
+- [x] JWT-based authentication with role management
 - [x] Two-panel responsive layout with collapsible sidebar
 - [x] Blue pastel theme with dark/light mode toggle
 - [x] Disease pages with structured sections
-- [x] Floating Table of Contents with scroll spy
-- [x] Bookmarks and personal notes functionality
-- [x] Full-text search across diseases
+- [x] Floating Table of Contents
+- [x] Bookmarks and personal notes
+- [x] Full-text search
 - [x] Admin panel with CRUD operations
 
-### Multilingual System (Complete - Feb 2025)
-- [x] **Site-wide Language Dropdown** - Dropdown selector with 🇬🇧 EN / 🇵🇹 PT / 🇪🇸 ES
-- [x] **Portuguese from Portugal** - Changed from 🇧🇷 Brazil to 🇵🇹 Portugal flag
-- [x] **Full UI Translation** - All interface elements translated:
-  - Sidebar navigation (Dashboard, Bookmarks, My Notes, etc.)
-  - Table of Contents (On This Page, section names)
-  - Buttons (Save, Notes, Edit, Done, Add more text)
-  - Disease content (titles, definitions, all sections)
-  - Search placeholders
-  - Login/Register pages
-  - Admin panel
-- [x] **Language Persistence** - Selected language persists during navigation
-- [x] **Auto-translation on Save** - Content translated to all languages when saving
+### Multilingual System (Complete)
+- [x] Site-wide Language Dropdown (🇬🇧 EN / 🇵🇹 PT / 🇪🇸 ES)
+- [x] Portuguese from Portugal (not Brazil)
+- [x] Full UI Translation - all interface elements
+- [x] Disease content auto-translation
 
-### Category Reordering (Complete - Feb 2025)
-- [x] **Admin Category Reorder** - Up/Down arrow buttons to reorder categories
-- [x] **Backend API** - `/api/categories/reorder` endpoint for bulk ordering
-- [x] **Real-time UI Update** - Categories reorder instantly in sidebar
+### Category Reordering (Complete)
+- [x] **Sidebar Reorder Buttons** - Up/Down arrows appear on hover for admins
+- [x] **Admin Panel Reorder** - Also available in Admin > Categories tab
+- [x] Changes save instantly and reflect across the app
 
-### Other Recent Features
-- [x] Rich Text Editor with formatting toolbar
-- [x] "Add More Text" button in each section
-- [x] Media Upload from computer
-- [x] Disease Search Bar for quick switching
+### Compact Content Layout (Complete)
+- [x] **Narrower TOC** - w-48 (was w-56), smaller text
+- [x] **Wider Content Area** - max-w-4xl (was max-w-3xl)
+- [x] **Smaller Title** - text-2xl/3xl (was text-3xl/4xl)
+- [x] **Compact Section Text** - text-sm with tighter spacing
 
-## Architecture
-
-```
-/app
-├── backend/
-│   ├── server.py         # FastAPI with all endpoints
-│   └── .env              # MONGO_URL, JWT_SECRET, EMERGENT_LLM_KEY
-├── frontend/
-│   ├── src/
-│   │   ├── contexts/
-│   │   │   └── LanguageContext.js  # UI_TRANSLATIONS + language state
-│   │   ├── components/
-│   │   │   └── layout/MainLayout.js  # Language dropdown in header
-│   │   └── pages/
-│   │       ├── DiseasePage.js
-│   │       ├── DashboardPage.js
-│   │       ├── AdminPage.js (with category reorder)
-│   │       └── LoginPage.js
-│   └── tailwind.config.js
-└── test_reports/
-```
-
-## API Endpoints
-- `PUT /api/categories/reorder` - Bulk reorder categories (admin only)
-- `POST /api/translate-disease/{id}` - Translate disease content
-- All standard CRUD endpoints for diseases, categories, users
+### Hyphen Symbol Fix (Complete)
+- [x] Only "- " at start of line becomes bullet
+- [x] "-" in middle of text or without space is preserved as-is
 
 ## Test Credentials
 - Admin: admin@pmr.edu / admin123
@@ -80,16 +45,13 @@ Create a full-stack web application for a Medical Education Platform focused on 
 ## Remaining/Future Tasks
 
 ### P1 (High Priority)
-- [ ] URL-based language prefix (/en/, /pt/, /es/) for SEO
-- [ ] Password reset functionality
-- [ ] Email verification
+- [ ] URL-based language prefix (/en/, /pt/) for SEO
+- [ ] Password reset & email verification
 
 ### P2 (Medium Priority)
 - [ ] Translate category names dynamically
 - [ ] Refactor DiseasePage.js into smaller components
-- [ ] Add more PMR diseases to seed data
 
 ### P3 (Lower Priority)
 - [ ] Export disease as PDF
 - [ ] Collaborative editing
-- [ ] Progress tracking for students
