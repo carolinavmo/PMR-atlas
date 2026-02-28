@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import { MainLayout } from '../components/layout/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -16,13 +17,14 @@ import { toast } from 'sonner';
 import axios from 'axios';
 import { 
   Plus, Search, Edit, Trash2, Users, BookOpen, FolderTree,
-  BarChart3, Shield, ChevronRight
+  BarChart3, Shield, ChevronRight, GripVertical, ArrowUp, ArrowDown
 } from 'lucide-react';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export const AdminPage = () => {
   const { getAuthHeaders, isAdmin, user } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   
   const [stats, setStats] = useState(null);
