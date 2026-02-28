@@ -39,6 +39,7 @@
 ### Per-Section Media Editing (Complete - Feb 28, 2026)
 - [x] **Media Button** - Appears on hover next to Edit button (admins only)
 - [x] **Media Edit Mode** - Purple border indicates media editing mode
+- [x] **Existing Media Display** - Shows count and list of existing media items
 - [x] **Add Media Dialog** - Full-featured dialog with:
   - Media Type: Image or Video
   - Source: URL input or file upload ("Choose File")
@@ -47,7 +48,9 @@
   - Description/Caption field
 - [x] **Media Display** - Images/videos displayed inline with proper alignment and caption
 - [x] **Video Support** - YouTube, Vimeo, and direct video URLs
-- [x] **Edit/Delete Overlay** - Hover over media to edit or remove
+- [x] **Edit/Delete Overlay** - Hover over existing media to see Edit and Delete buttons
+- [x] **Edit Media Dialog** - Modify URL, size, alignment, and description of existing media
+- [x] **Delete Media** - Remove media items with single click
 - [x] **API Endpoint** - `/api/diseases/{id}/section-media`
 - [x] **Media Metadata** - Stored in `{section_id}_media_meta` field
 
