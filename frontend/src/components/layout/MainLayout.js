@@ -98,6 +98,33 @@ export const MainLayout = ({ children }) => {
     }
   };
 
+  // Reorder category in sidebar (admin only)
+  const moveCategoryInSidebar = async (categoryId, direction) => {
+    const currentIndex = categories.findIndex(c => c.id === categoryId);
+    if (direction === 'up' && currentIndex === 0) return;
+    if (direction === 'down' && currentIndex === categories.length - 1) return;
+    
+    const newCategories = [...categories];
+    const swapIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    
+    [newCategories[currentIndex], newCategories[swapIndex]] = 
+    [newCategories[swapIndex], newCategories[currentIndex]];
+    
+    setCategories(newCategories);
+    
+    try {
+      const headers = getAuthHeaders();
+      await axios.put(
+        `${API_URL}/categories/reorder`,
+        { category_ids: newCategories.map(c => c.id) },
+        { headers }
+      );
+    } catch (err) {
+      fetchCategories(); // Revert on error
+      toast.error('Failed to reorder');
+    }
+  };
+
   const getInitials = (name) => {
     return name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U';
   };
