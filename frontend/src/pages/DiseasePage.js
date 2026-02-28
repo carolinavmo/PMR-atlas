@@ -632,7 +632,7 @@ export const DiseasePage = () => {
                           variant="outline"
                           onClick={() => setEditingSection(null)}
                         >
-                          Done
+                          {t('done')}
                         </Button>
                       </div>
                     </div>
@@ -657,7 +657,7 @@ export const DiseasePage = () => {
                                      hover:border-blue-400 transition-colors text-sm"
                         >
                           <Type className="w-4 h-4" />
-                          <span>Add more text</span>
+                          <span>{t('addMoreText')}</span>
                         </button>
                       )}
                     </div>
