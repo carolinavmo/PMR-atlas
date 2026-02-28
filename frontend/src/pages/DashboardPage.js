@@ -116,7 +116,7 @@ export const DashboardPage = () => {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">Total Diseases</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">{t('totalDiseases')}</p>
                   <p className="text-3xl font-heading font-bold mt-1">{stats?.totalDiseases || 0}</p>
                 </div>
                 <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
@@ -130,7 +130,7 @@ export const DashboardPage = () => {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">Categories</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">{t('categories')}</p>
                   <p className="text-3xl font-heading font-bold mt-1">{stats?.totalCategories || 0}</p>
                 </div>
                 <div className="w-12 h-12 rounded-xl bg-lavender-100 dark:bg-lavender-900/30 flex items-center justify-center">
@@ -144,7 +144,7 @@ export const DashboardPage = () => {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">Bookmarks</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">{t('bookmarks')}</p>
                   <p className="text-3xl font-heading font-bold mt-1">{stats?.bookmarkCount || 0}</p>
                 </div>
                 <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
@@ -158,7 +158,7 @@ export const DashboardPage = () => {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">Recent Views</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">{t('recentViews')}</p>
                   <p className="text-3xl font-heading font-bold mt-1">{stats?.recentCount || 0}</p>
                 </div>
                 <div className="w-12 h-12 rounded-xl bg-rose-100 dark:bg-rose-900/30 flex items-center justify-center">
@@ -174,10 +174,10 @@ export const DashboardPage = () => {
           {/* Recently Viewed */}
           <Card data-testid="recent-section">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-lg font-heading">Recently Viewed</CardTitle>
+              <CardTitle className="text-lg font-heading">{t('recentlyViewed')}</CardTitle>
               <Link to="/recent">
                 <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
-                  View all <ChevronRight className="w-4 h-4 ml-1" />
+                  {t('viewAll')} <ChevronRight className="w-4 h-4 ml-1" />
                 </Button>
               </Link>
             </CardHeader>
@@ -185,8 +185,7 @@ export const DashboardPage = () => {
               {recentViews.length === 0 ? (
                 <div className="text-center py-8 text-slate-500">
                   <Clock className="w-10 h-10 mx-auto mb-2 opacity-50" />
-                  <p>No recently viewed diseases</p>
-                  <p className="text-sm">Start exploring to build your history</p>
+                  <p>{t('noBookmarksYet')}</p>
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -211,10 +210,10 @@ export const DashboardPage = () => {
           {/* Bookmarks */}
           <Card data-testid="bookmarks-section">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-lg font-heading">Your Bookmarks</CardTitle>
+              <CardTitle className="text-lg font-heading">{t('yourBookmarks')}</CardTitle>
               <Link to="/bookmarks">
                 <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
-                  View all <ChevronRight className="w-4 h-4 ml-1" />
+                  {t('viewAll')} <ChevronRight className="w-4 h-4 ml-1" />
                 </Button>
               </Link>
             </CardHeader>
@@ -222,8 +221,8 @@ export const DashboardPage = () => {
               {bookmarks.length === 0 ? (
                 <div className="text-center py-8 text-slate-500">
                   <Bookmark className="w-10 h-10 mx-auto mb-2 opacity-50" />
-                  <p>No bookmarks yet</p>
-                  <p className="text-sm">Save diseases for quick access</p>
+                  <p>{t('noBookmarksYet')}</p>
+                  <p className="text-sm">{t('saveDiseasesForQuickAccess')}</p>
                 </div>
               ) : (
                 <div className="space-y-2">
