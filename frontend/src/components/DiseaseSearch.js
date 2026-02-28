@@ -69,7 +69,7 @@ export const DiseaseSearch = ({ currentDiseaseId }) => {
         <Input
           ref={inputRef}
           type="text"
-          placeholder="Quick switch to another disease..."
+          placeholder={t('quickSwitchToAnotherDisease')}
           value={query}
           onChange={(e) => {
             setQuery(e.target.value);
