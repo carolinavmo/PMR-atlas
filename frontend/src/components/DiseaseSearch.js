@@ -98,7 +98,7 @@ export const DiseaseSearch = ({ currentDiseaseId }) => {
         <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg shadow-lg z-50 max-h-80 overflow-auto">
           {loading ? (
             <div className="p-3 text-center text-slate-500 text-sm">
-              Searching...
+              {t('loading')}
             </div>
           ) : results.length > 0 ? (
             <ul className="py-1">
@@ -121,7 +121,7 @@ export const DiseaseSearch = ({ currentDiseaseId }) => {
             </ul>
           ) : query.length >= 2 ? (
             <div className="p-3 text-center text-slate-500 text-sm">
-              No diseases found
+              {t('noInformationAvailable')}
             </div>
           ) : null}
         </div>
