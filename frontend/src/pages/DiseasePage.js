@@ -211,8 +211,6 @@ export const DiseasePage = () => {
     try {
       const response = await axios.get(`${API_URL}/diseases/${id}`);
       setDisease(response.data);
-      setEditedContent({});
-      setHasChanges(false);
     } catch (err) {
       console.error('Failed to fetch disease:', err);
       toast.error('Failed to load disease');
@@ -286,74 +284,9 @@ export const DiseasePage = () => {
     }
   };
 
-  const handleSectionEdit = (sectionId, value) => {
-    setEditedContent(prev => ({
-      ...prev,
-      [sectionId]: value
-    }));
-    setHasChanges(true);
-  };
-
-  const handleSectionMediaChange = (sectionId, newMedia) => {
-    setEditedContent(prev => ({
-      ...prev,
-      [`${sectionId}_media`]: newMedia
-    }));
-    setHasChanges(true);
-  };
-
   const getSectionMedia = (sectionId) => {
     const mediaKey = `${sectionId}_media`;
-    if (editedContent.hasOwnProperty(mediaKey)) {
-      return editedContent[mediaKey];
-    }
     return disease?.[mediaKey] || [];
-  };
-
-  const saveAllChanges = async () => {
-    setSaving(true);
-    try {
-      const headers = getAuthHeaders();
-      const updateData = { ...editedContent };
-      
-      // Save changes in current language
-      await axios.put(`${API_URL}/diseases/${id}`, updateData, { headers });
-      
-      // Auto-translate to other languages
-      setTranslating(true);
-      toast.info('Auto-translating to other languages...');
-      
-      const otherLanguages = ['pt', 'es'].filter(l => l !== 'en');
-      for (const lang of otherLanguages) {
-        try {
-          await axios.post(
-            `${API_URL}/translate-disease/${id}?target_language=${lang}`,
-            {},
-            { headers }
-          );
-        } catch (err) {
-          console.error(`Translation to ${lang} failed:`, err);
-        }
-      }
-      
-      setTranslating(false);
-      
-      // Refresh disease data
-      await fetchDisease();
-      toast.success('Changes saved and translated to all languages');
-      setEditingSection(null);
-    } catch (err) {
-      toast.error('Failed to save changes');
-    } finally {
-      setSaving(false);
-      setTranslating(false);
-    }
-  };
-
-  const discardChanges = () => {
-    setEditedContent({});
-    setHasChanges(false);
-    setEditingSection(null);
   };
 
   const scrollToSection = (sectionId) => {
