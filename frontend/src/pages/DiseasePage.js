@@ -754,71 +754,66 @@ export const DiseasePage = () => {
                     )}
                   </div>
                   
-                  {/* Media positioned BEFORE text */}
-                  <SectionMedia
-                    media={sectionMedia}
-                    onChange={(newMedia) => handleSectionMediaChange(section.id, newMedia)}
-                    readOnly={!isEditor}
-                    position="before"
-                  />
-                  
-                  {isEditing && section.id !== 'references' ? (
+                  {/* Section Content - Edit Mode vs View Mode */}
+                  {editMode && section.id !== 'references' ? (
                     <div className="mb-4">
-                      <RichTextEditor
-                        value={content}
-                        onChange={(value) => handleSectionEdit(section.id, value)}
+                      <Textarea
+                        value={editedFields[section.id] || ''}
+                        onChange={(e) => handleFieldChange(section.id, e.target.value)}
                         placeholder={`Enter ${section.label.toLowerCase()}...`}
+                        className="min-h-[150px] bg-white dark:bg-slate-800 border-blue-300 focus:border-blue-500"
+                        data-testid={`edit-${section.id}`}
                       />
-                      <div className="flex gap-2 mt-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => setEditingSection(null)}
-                        >
-                          {t('done')}
-                        </Button>
-                      </div>
                     </div>
                   ) : (
                     <div className="mb-4 clearfix w-full">
-                      {/* Media positioned INLINE (left/right/center) */}
+                      {/* Media */}
                       <SectionMedia
                         media={sectionMedia}
                         onChange={(newMedia) => handleSectionMediaChange(section.id, newMedia)}
-                        readOnly={!isEditor}
+                        readOnly={!isAdmin}
                         position="inline"
                       />
                       <div className="w-full">
                         {renderSectionContent(section.id, content)}
                       </div>
-                      
-                      {/* Add more text button */}
-                      {isEditor && section.id !== 'references' && (
-                        <button
-                          type="button"
-                          onClick={() => handleAddMoreText(section.id)}
-                          className="mt-3 w-full py-2 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg 
-                                     flex items-center justify-center gap-2 text-slate-400 hover:text-blue-500 
-                                     hover:border-blue-400 transition-colors text-sm"
-                        >
-                          <Type className="w-4 h-4" />
-                          <span>{t('addMoreText')}</span>
-                        </button>
-                      )}
                     </div>
                   )}
-                  
-                  {/* Media positioned AFTER text + Add button */}
-                  <SectionMedia
-                    media={sectionMedia}
-                    onChange={(newMedia) => handleSectionMediaChange(section.id, newMedia)}
-                    readOnly={!isEditor}
-                    position="after"
-                  />
                 </div>
               );
             })}
           </div>
+
+          {/* Translate Confirmation Dialog */}
+          <Dialog open={showTranslateConfirm} onOpenChange={setShowTranslateConfirm}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <AlertTriangle className="w-5 h-5 text-amber-500" />
+                  Confirm Translation
+                </DialogTitle>
+                <DialogDescription>
+                  This will translate the content from <strong>{LANGUAGE_NAMES[currentLanguage]}</strong> to all other languages.
+                  <br /><br />
+                  <span className="text-amber-600 dark:text-amber-400">
+                    Warning: This will overwrite any existing content in other languages.
+                  </span>
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setShowTranslateConfirm(false)}>
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={saveAndTranslate}
+                  className="bg-green-600 hover:bg-green-700"
+                >
+                  <Globe className="w-4 h-4 mr-1" />
+                  Yes, Save & Translate
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
 
           {/* Version Info */}
           <div className="mt-12 pt-6 border-t border-slate-200 dark:border-slate-700 text-sm text-slate-400 flex items-center gap-4">
@@ -826,6 +821,12 @@ export const DiseasePage = () => {
             <span>Version {disease.version}</span>
             <span>•</span>
             <span>Last updated: {new Date(disease.updated_at).toLocaleDateString()}</span>
+            {disease.last_edited_language && (
+              <>
+                <span>•</span>
+                <span>Last edited in: {LANGUAGE_NAMES[disease.last_edited_language] || disease.last_edited_language}</span>
+              </>
+            )}
           </div>
         </div>
       </div>
