@@ -487,16 +487,16 @@ export const DiseasePage = () => {
             <DiseaseSearch currentDiseaseId={id} />
           </div>
 
-          {/* Header */}
-          <div className="mb-8">
-            <div className="flex items-start justify-between gap-4 mb-4">
+          {/* Header - More Compact */}
+          <div className="mb-6">
+            <div className="flex items-start justify-between gap-4 mb-3">
               <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <Badge variant="outline" className="text-blue-600 border-blue-300">
+                <div className="flex items-center gap-2 mb-1">
+                  <Badge variant="outline" className="text-blue-600 border-blue-300 text-xs">
                     {disease.category_name}
                   </Badge>
                 </div>
-                <h1 className="text-3xl lg:text-4xl font-heading font-bold text-slate-900 dark:text-white" data-testid="disease-title">
+                <h1 className="text-2xl lg:text-3xl font-heading font-bold text-slate-900 dark:text-white" data-testid="disease-title">
                   {getDiseaseName()}
                 </h1>
               </div>
