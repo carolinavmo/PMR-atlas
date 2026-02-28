@@ -557,7 +557,7 @@ export const DiseasePage = () => {
           )}
 
           {/* Continuous Content Sections - Full Width */}
-          <div className="disease-content w-full">
+          <div>
             {sections.map((section) => {
               const content = getCurrentContent(section.id);
               const sectionMedia = getSectionMedia(section.id);
