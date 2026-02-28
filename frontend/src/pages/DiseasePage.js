@@ -801,7 +801,7 @@ export const DiseasePage = () => {
                         media={sectionMedia}
                         onChange={(newMedia) => saveSectionMedia(section.id, newMedia)}
                         readOnly={false}
-                        position="after"
+                        position="all"
                       />
                       
                       {/* Done button */}
