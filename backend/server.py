@@ -105,6 +105,21 @@ class DiseaseCreate(BaseModel):
     prognosis: str = ""
     references: List[str] = []
     images: List[str] = []
+    # Section-specific media
+    definition_media: List[Dict[str, Any]] = []
+    epidemiology_media: List[Dict[str, Any]] = []
+    pathophysiology_media: List[Dict[str, Any]] = []
+    biomechanics_media: List[Dict[str, Any]] = []
+    clinical_presentation_media: List[Dict[str, Any]] = []
+    physical_examination_media: List[Dict[str, Any]] = []
+    imaging_findings_media: List[Dict[str, Any]] = []
+    differential_diagnosis_media: List[Dict[str, Any]] = []
+    treatment_conservative_media: List[Dict[str, Any]] = []
+    treatment_interventional_media: List[Dict[str, Any]] = []
+    treatment_surgical_media: List[Dict[str, Any]] = []
+    rehabilitation_protocol_media: List[Dict[str, Any]] = []
+    prognosis_media: List[Dict[str, Any]] = []
+    references_media: List[Dict[str, Any]] = []
 
 class DiseaseUpdate(BaseModel):
     name: Optional[str] = None
@@ -125,6 +140,21 @@ class DiseaseUpdate(BaseModel):
     prognosis: Optional[str] = None
     references: Optional[List[str]] = None
     images: Optional[List[str]] = None
+    # Section-specific media
+    definition_media: Optional[List[Dict[str, Any]]] = None
+    epidemiology_media: Optional[List[Dict[str, Any]]] = None
+    pathophysiology_media: Optional[List[Dict[str, Any]]] = None
+    biomechanics_media: Optional[List[Dict[str, Any]]] = None
+    clinical_presentation_media: Optional[List[Dict[str, Any]]] = None
+    physical_examination_media: Optional[List[Dict[str, Any]]] = None
+    imaging_findings_media: Optional[List[Dict[str, Any]]] = None
+    differential_diagnosis_media: Optional[List[Dict[str, Any]]] = None
+    treatment_conservative_media: Optional[List[Dict[str, Any]]] = None
+    treatment_interventional_media: Optional[List[Dict[str, Any]]] = None
+    treatment_surgical_media: Optional[List[Dict[str, Any]]] = None
+    rehabilitation_protocol_media: Optional[List[Dict[str, Any]]] = None
+    prognosis_media: Optional[List[Dict[str, Any]]] = None
+    references_media: Optional[List[Dict[str, Any]]] = None
 
 class DiseaseResponse(BaseModel):
     model_config = ConfigDict(extra="ignore")
