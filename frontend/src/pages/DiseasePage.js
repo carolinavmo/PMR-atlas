@@ -45,6 +45,7 @@ const sections = [
 export const DiseasePage = () => {
   const { id } = useParams();
   const { getAuthHeaders, isEditor } = useAuth();
+  const { currentLanguage } = useLanguage();
   
   const [disease, setDisease] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -56,8 +57,8 @@ export const DiseasePage = () => {
   const [editingSection, setEditingSection] = useState(null);
   const [editedContent, setEditedContent] = useState({});
   const [saving, setSaving] = useState(false);
+  const [translating, setTranslating] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
-  const [currentLanguage, setCurrentLanguage] = useState('en');
 
   const contentRef = useRef(null);
   const sectionRefs = useRef({});
