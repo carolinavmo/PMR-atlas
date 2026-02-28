@@ -444,7 +444,7 @@ export const DiseasePage = () => {
         <div className="hidden xl:block fixed right-8 top-24 w-56 z-20">
           <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 shadow-lg max-h-[calc(100vh-120px)] overflow-auto scrollbar-thin">
             <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-3">
-              On This Page
+              {t('onThisPage')}
             </h3>
             <nav className="space-y-0.5">
               {sections.map((section) => {
@@ -474,7 +474,7 @@ export const DiseasePage = () => {
           <div className="flex items-center justify-between gap-4 mb-4">
             <Link to="/dashboard" className="inline-flex items-center text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
               <ArrowLeft className="w-4 h-4 mr-1" />
-              Back to Dashboard
+              {t('backToDashboard')}
             </Link>
             <DiseaseSearch currentDiseaseId={id} />
           </div>
