@@ -269,19 +269,47 @@ export const MainLayout = ({ children }) => {
 
           {/* Right Side Actions */}
           <div className="flex items-center gap-2">
-            {/* Language Toggle */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={toggleLanguage}
-              className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400"
-              title={`Current: ${getCurrentLanguageInfo().name}. Click to switch.`}
-              data-testid="language-toggle"
-            >
-              <Globe className="w-4 h-4" />
-              <span className="text-base">{getCurrentLanguageInfo().flag}</span>
-              <span className="hidden sm:inline text-xs font-medium">{getCurrentLanguageInfo().code.toUpperCase()}</span>
-            </Button>
+            {/* Language Selector Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2 min-w-[100px] justify-between border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/30"
+                  data-testid="language-toggle"
+                >
+                  <div className="flex items-center gap-2">
+                    <Globe className="w-4 h-4 text-blue-600" />
+                    <span className="text-lg">{getCurrentLanguageInfo().flag}</span>
+                    <span className="text-sm font-medium">{getCurrentLanguageInfo().code.toUpperCase()}</span>
+                  </div>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <div className="px-2 py-1.5 text-xs font-semibold text-slate-500">
+                  Select Language
+                </div>
+                <DropdownMenuSeparator />
+                {languages.map((lang) => (
+                  <DropdownMenuItem
+                    key={lang.code}
+                    onClick={() => setLanguage(lang.code)}
+                    className={`flex items-center justify-between cursor-pointer ${
+                      currentLanguage === lang.code ? 'bg-blue-50 dark:bg-blue-900/30' : ''
+                    }`}
+                    data-testid={`lang-option-${lang.code}`}
+                  >
+                    <span className="flex items-center gap-2">
+                      <span className="text-lg">{lang.flag}</span>
+                      <span>{lang.name}</span>
+                    </span>
+                    {currentLanguage === lang.code && (
+                      <span className="text-blue-600 font-bold">✓</span>
+                    )}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             {/* Theme Toggle */}
             <Button
