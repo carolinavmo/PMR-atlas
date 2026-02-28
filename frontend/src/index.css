@@ -208,6 +208,12 @@
     text-wrap: balance;
   }
   
+  .clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  
   .scrollbar-thin {
     scrollbar-width: thin;
     scrollbar-color: hsl(var(--muted)) transparent;
