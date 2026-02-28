@@ -689,29 +689,6 @@ export const DiseasePage = () => {
                 ))}
               </div>
             )}
-
-            {/* Save Changes Bar */}
-            {hasChanges && isEditor && (
-              <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg mb-4">
-                <span className="text-sm text-blue-700 dark:text-blue-300">{t('youHaveUnsavedChanges')}</span>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" onClick={discardChanges} disabled={saving || translating}>
-                    <X className="w-4 h-4 mr-1" />
-                    {t('discard')}
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    onClick={saveAllChanges}
-                    disabled={saving || translating}
-                    className="bg-blue-600 hover:bg-blue-700"
-                  >
-                    {(saving || translating) && <Loader2 className="w-4 h-4 mr-1 animate-spin" />}
-                    {!saving && !translating && <Save className="w-4 h-4 mr-1" />}
-                    {saving ? t('saving') : translating ? t('translating') : t('saveAndTranslate')}
-                  </Button>
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Notes Panel */}
@@ -741,23 +718,29 @@ export const DiseasePage = () => {
             {sections.map((section) => {
               const content = getCurrentContent(section.id);
               const sectionMedia = getSectionMedia(section.id);
-              const isEditing = editingSection === section.id;
               
-              // Skip empty sections in read mode (but show if has media)
-              if (!isEditing && !content && sectionMedia.length === 0 && section.id !== 'references') return null;
-              if (section.id === 'references' && Array.isArray(content) && content.length === 0 && !isEditing && sectionMedia.length === 0) return null;
+              // In edit mode, always show sections (even empty ones)
+              // In view mode, skip empty sections
+              if (!editMode && !content && sectionMedia.length === 0 && section.id !== 'references') return null;
+              if (!editMode && section.id === 'references' && Array.isArray(content) && content.length === 0 && sectionMedia.length === 0) return null;
               
               return (
                 <div 
                   key={section.id} 
                   ref={el => sectionRefs.current[section.id] = el}
-                  className="w-full mb-6"
+                  className={`w-full mb-6 ${editMode ? 'p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900' : ''}`}
                   data-testid={`section-${section.id}`}
                 >
                   <div className="flex items-center justify-between group w-full mb-3 pb-2 border-b border-slate-200 dark:border-slate-700">
                     <h3 className="text-base font-semibold text-slate-900 dark:text-white" id={section.id}>
                       {section.label}
                     </h3>
+                    {editMode && (
+                      <span className="text-xs text-slate-400">
+                        {LANGUAGE_NAMES[currentLanguage]}
+                      </span>
+                    )}
+                  </div>
                     {isEditor && !isEditing && (
                       <Button
                         variant="ghost"
