@@ -624,6 +624,19 @@ class InlineSaveBulkRequest(BaseModel):
     language: str = "en"
     fields: Dict[str, str]  # field_name -> content
 
+class MediaItem(BaseModel):
+    """Single media item"""
+    url: str
+    type: str = "image"  # "image" or "video"
+    description: str = ""
+    size: str = "50"  # "25", "50", "75", "100"
+    alignment: str = "center"  # "before", "after", "left", "right", "center"
+
+class SectionMediaSaveRequest(BaseModel):
+    """Request model for saving section media"""
+    section_id: str  # e.g., "definition", "epidemiology"
+    media: List[MediaItem]  # List of media items for this section
+
 @api_router.put("/diseases/{disease_id}/inline-save")
 async def inline_save_single_language(
     disease_id: str,
