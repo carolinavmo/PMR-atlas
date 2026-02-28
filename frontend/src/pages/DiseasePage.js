@@ -787,6 +787,41 @@ export const DiseasePage = () => {
                         </Button>
                       </div>
                     </div>
+                  ) : isEditingMedia ? (
+                    // Media Edit Mode
+                    <div className="space-y-4">
+                      {/* Media editing indicator */}
+                      <div className="flex items-center gap-2 text-sm text-purple-600 dark:text-purple-400">
+                        <Image className="w-4 h-4" />
+                        <span>Editing media for {section.label}</span>
+                      </div>
+                      
+                      {/* Media Editor Component */}
+                      <SectionMedia
+                        media={sectionMedia}
+                        onChange={(newMedia) => saveSectionMedia(section.id, newMedia)}
+                        readOnly={false}
+                        position="after"
+                      />
+                      
+                      {/* Done button */}
+                      <div className="flex items-center gap-2 pt-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={cancelMediaEdit}
+                          disabled={savingMedia}
+                          data-testid={`done-media-btn-${section.id}`}
+                        >
+                          {savingMedia ? (
+                            <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                          ) : (
+                            <Check className="w-4 h-4 mr-1" />
+                          )}
+                          Done Editing Media
+                        </Button>
+                      </div>
+                    </div>
                   ) : (
                     // View Mode
                     <div className="mb-4 clearfix w-full">
