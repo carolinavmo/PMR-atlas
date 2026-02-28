@@ -53,6 +53,8 @@ export const MainLayout = ({ children }) => {
   const [diseases, setDiseases] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedCategories, setExpandedCategories] = useState({});
+  const [draggedCategory, setDraggedCategory] = useState(null);
+  const [dropTargetId, setDropTargetId] = useState(null);
 
   useEffect(() => {
     fetchCategories();
