@@ -369,11 +369,11 @@ export const DiseasePage = () => {
   };
 
   const renderSectionContent = (sectionId, content) => {
-    if (!content) return <p className="text-slate-400 italic">No information available</p>;
+    if (!content) return <p className="text-slate-400 italic">{t('noInformationAvailable')}</p>;
     
     // Handle array content (references)
     if (Array.isArray(content)) {
-      if (content.length === 0) return <p className="text-slate-400 italic">No references</p>;
+      if (content.length === 0) return <p className="text-slate-400 italic">{t('noReferences')}</p>;
       return (
         <ol className="list-decimal list-inside space-y-2">
           {content.map((item, i) => (
@@ -384,16 +384,24 @@ export const DiseasePage = () => {
     }
     
     // Handle string content with line breaks and lists
-    const lines = content.split('\n').filter(line => line.trim());
+    // Only treat "- " at the START of a line as a bullet (not "-" in the middle)
+    const lines = content.split('\n');
     
     return (
       <div className="section-content">
         {lines.map((line, i) => {
-          if (line.startsWith('- ') || line.startsWith('• ')) {
+          const trimmedLine = line.trim();
+          if (!trimmedLine) return null; // Skip empty lines
+          
+          // Only treat as bullet if line STARTS with "- " or "• " (bullet char + space)
+          // This allows using "-" without space or in the middle of text
+          const isBullet = /^[-•]\s/.test(trimmedLine);
+          
+          if (isBullet) {
             return (
               <div key={i} className="flex gap-2 mb-1">
                 <span className="text-blue-500 mt-0.5">•</span>
-                <span>{parseFormattedText(line.substring(2))}</span>
+                <span>{parseFormattedText(trimmedLine.substring(2))}</span>
               </div>
             );
           }
