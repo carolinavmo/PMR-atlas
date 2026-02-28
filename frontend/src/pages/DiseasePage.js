@@ -741,18 +741,6 @@ export const DiseasePage = () => {
                       </span>
                     )}
                   </div>
-                    {isEditor && !isEditing && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => setEditingSection(section.id)}
-                      >
-                        <Pencil className="w-4 h-4 mr-1" />
-                        {t('edit')}
-                      </Button>
-                    )}
-                  </div>
                   
                   {/* Section Content - Edit Mode vs View Mode */}
                   {editMode && section.id !== 'references' ? (
